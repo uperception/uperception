@@ -1,3 +1,29 @@
+# Builder
+FROM golang:1.19.1-alpine3.15 as builder
+
+ENV GO111MODULE=on
+RUN apk update && apk add --no-cache git ca-certificates tzdata && update-ca-certificates
+
+ENV USER=mmonitoring
+ENV UID=10001
+
+RUN adduser \
+	--disabled-password \
+	--gecos "" \
+	--home "/nonexistent" \
+	--shell "/sbin/nologin" \
+	--no-create-home \
+	--uid "${UID}" \
+	"${USER}"
+
+WORKDIR $GOPATH/src/mmonitoring
+COPY . .
+
+RUN go mod vendor
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -o /go/bin/rct -mod vendor main.go
+
+
+# Main Image
 FROM debian:buster-slim
 
 LABEL name="lighthouse" \
@@ -23,6 +49,14 @@ RUN apt-get update && apt-get install -y \
 
 ARG CACHEBUST=1
 RUN npm install -g lighthouse
+
+# Copy go application to container
+COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=builder /etc/passwd /etc/passwd
+COPY --from=builder /etc/group /etc/group
+COPY --from=builder /go/bin/mmonitoring /go/bin/mmonitoring
+COPY configs /var/mmonitoring/configs
 
 # Add Chrome as a user
 RUN groupadd -r chrome && useradd -r -g chrome -G audio,video chrome \

@@ -1,6 +1,8 @@
 package storage
 
+import "io"
+
 type Storage interface {
-	SaveLighthouseResult(domain string) error
+	SaveLighthouseResult(domain string, content io.Reader) error
 	StoreMetadata() error
 }

@@ -2,36 +2,23 @@ package command
 
 import (
 	"log"
-	"os/exec"
 
+	"github.com/leometzger/mmonitoring-runner/collectors"
 	"github.com/leometzger/mmonitoring-runner/storage"
 	"github.com/spf13/cobra"
 )
 
+// Collect lighthouse metrics
 func RunLighthouse(storage storage.Storage) *cobra.Command {
 	return &cobra.Command{
-		Use:  "run-lighthouse [domain]",
+		Use:  "run-lighthouse [url]",
 		Args: cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
-			domain := args[0]
+			lighthouse := collectors.NewLighthouseCollector(storage)
 
-			err := exec.Command(
-				"lighthouse",
-				domain,
-				"--output-path=./reports/"+"report"+".json",
-				"--gather-mode",
-				"--save-assets",
-				"--output='json,html'",
-				"--chrome-flags='--headless'",
-			).Run()
-
+			err := lighthouse.Collect(args[0])
 			if err != nil {
-				log.Fatal("Error running lighthouse command", err)
-			}
-
-			err = storage.SaveLighthouseResult(domain)
-			if err != nil {
-				log.Fatal("Error savind lighthouse result")
+				log.Fatal("error collecting lighthouse data", err)
 			}
 		},
 	}
