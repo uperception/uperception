@@ -20,7 +20,7 @@ WORKDIR $GOPATH/src/mmonitoring
 COPY . .
 
 RUN go mod vendor
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -o /go/bin/rct -mod vendor main.go
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -o /go/bin/mmonitoring -mod vendor main.go
 
 
 # Main Image
