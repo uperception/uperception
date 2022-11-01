@@ -55,15 +55,18 @@ COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group
-COPY --from=builder /go/bin/mmonitoring /go/bin/mmonitoring
+COPY --from=builder /go/bin/mmonitoring /usr/bin/mmonitoring
 COPY configs /var/mmonitoring/configs
+
+RUN echo 'kernel.unprivileged_userns_clone=1' > /etc/sysctl.d/userns.conf
 
 # Add Chrome as a user
 RUN groupadd -r chrome && useradd -r -g chrome -G audio,video chrome \
-	&& mkdir -p /home/chrome/reports && chown -R chrome:chrome /home/chrome
+	&& mkdir -p /home/chrome/reports && chown -R chrome:chrome /home/chrome \
+	&& mkdir -p /tmp/reports
 
 VOLUME /home/chrome/reports
 WORKDIR /home/chrome/reports
 USER chrome
 
-ENTRYPOINT [ "mmonitoring" ]
+ENTRYPOINT [ "/usr/bin/mmonitoring" ]
