@@ -1,17 +1,15 @@
-package storage_test
+package utils_test
 
 import (
 	"testing"
-	"time"
 
-	"github.com/leometzger/mmonitoring-runner/storage"
+	"github.com/leometzger/mmonitoring-runner/utils"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestS3KeyPath(t *testing.T) {
+func TestKeyPathing(t *testing.T) {
 	cases := []struct {
 		url      string
-		datetime time.Time
 		expected string
 	}{
 		{
@@ -29,6 +27,6 @@ func TestS3KeyPath(t *testing.T) {
 	}
 
 	for _, test := range cases {
-		assert.Equal(t, test.expected, storage.GetS3KeyFromUrl(test.url))
+		assert.Equal(t, test.expected, utils.GetPathFromUrl(test.url))
 	}
 }

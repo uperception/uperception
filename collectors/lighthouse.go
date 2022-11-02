@@ -22,8 +22,6 @@ func NewLighthouseCollector(storage storage.Storage) *LighthouseCollector {
 // Collects lighthouse data
 func (r *LighthouseCollector) Collect(urls []string) error {
 	for i, url := range urls {
-		log.Println("Start running for", url)
-
 		err := exec.Command(
 			"lighthouse",
 			url,
@@ -32,8 +30,6 @@ func (r *LighthouseCollector) Collect(urls []string) error {
 			"--output=json",
 		).Run()
 
-		log.Println("End running")
-
 		if err != nil {
 			log.Println("Error running lighthouse command for", url, err)
 			break
@@ -41,19 +37,15 @@ func (r *LighthouseCollector) Collect(urls []string) error {
 	}
 
 	for i, url := range urls {
-		log.Println("Saving monitoring.json")
-
 		resultFile, err := os.Open(getTmpPath(i))
 		if err != nil {
 			log.Fatal(err)
 		}
-		log.Println("Adding to storage", url)
 
 		err = r.storage.SaveLighthouseResult(url, resultFile)
 		if err != nil {
 			log.Fatal("Error saving lighthouse result", err)
 		}
-		log.Println("Adding to storage")
 	}
 
 	return nil

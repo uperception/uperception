@@ -2,14 +2,10 @@ package storage
 
 import (
 	"context"
-	"crypto/sha1"
-	"encoding/hex"
 	"io"
-	"regexp"
-	"strings"
-	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/leometzger/mmonitoring-runner/utils"
 )
 
 type AwsStorage struct {
@@ -25,7 +21,8 @@ func NewAwsStorage(client *s3.Client, bucket string) *AwsStorage {
 }
 
 func (s *AwsStorage) SaveLighthouseResult(url string, content io.Reader) error {
-	key := GetS3KeyFromUrl(url)
+	key := utils.GetPathFromUrl(url)
+
 	_, err := s.client.PutObject(context.TODO(), &s3.PutObjectInput{
 		Bucket: &s.bucket,
 		Key:    &key,
@@ -41,35 +38,4 @@ func (s *AwsStorage) SaveLighthouseResult(url string, content io.Reader) error {
 
 func (s *AwsStorage) StoreMetadata() error {
 	return nil
-}
-
-// Return the path pattern a s3 key path to store the lighthouse result
-func GetS3KeyFromUrl(url string) string {
-	r := regexp.MustCompile(`https?:\/\/(?P<Domain>[a-zA-Z0-9.]+)(?P<Path>\/[a-zA-Z0-9\/]+)?`)
-	result := r.FindStringSubmatch(url)
-
-	hasher := sha1.New()
-	hasher.Write([]byte(url))
-	id := hex.EncodeToString(hasher.Sum(nil))
-
-	if len(result) == 3 {
-		domain := result[1]
-		pathing := []string{
-			"reports",
-			domain,
-			nowAsPath(),
-			id + ".json",
-		}
-
-		return strings.Join(pathing, "/")
-	}
-
-	return ""
-}
-
-func nowAsPath() string {
-	// YYYY/MM/DD
-	datePath := time.Now().Format("2006/01/02")
-	timePath := strings.ReplaceAll(time.Now().Format("15:04"), ":", "/")
-	return datePath + "/" + timePath
 }
