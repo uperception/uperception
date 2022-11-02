@@ -69,4 +69,4 @@ VOLUME /home/chrome/reports
 WORKDIR /home/chrome/reports
 USER chrome
 
-ENTRYPOINT [ "/usr/bin/mmonitoring" ]
+ENTRYPOINT [ "/usr/bin/mmonitoring", "run-lighthouse" ]

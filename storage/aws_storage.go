@@ -68,7 +68,8 @@ func GetS3KeyFromUrl(url string) string {
 }
 
 func nowAsPath() string {
-	datePath := time.Now().Format("2006/02/01")
+	// YYYY/MM/DD
+	datePath := time.Now().Format("2006/01/02")
 	timePath := strings.ReplaceAll(time.Now().Format("15:04"), ":", "/")
-	return datePath + timePath
+	return datePath + "/" + timePath
 }

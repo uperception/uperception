@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"strconv"
 
 	"github.com/leometzger/mmonitoring-runner/storage"
 )
@@ -19,33 +20,45 @@ func NewLighthouseCollector(storage storage.Storage) *LighthouseCollector {
 }
 
 // Collects lighthouse data
-func (r *LighthouseCollector) Collect(url string) error {
-	log.Println("Start running for", url)
-	err := exec.Command(
-		"lighthouse",
-		url,
-		"--chrome-flags='--headless'",
-		"--output-path=/tmp/reports/mmonitoring.json",
-		"--output=json",
-	).Run()
-	log.Println("End running")
+func (r *LighthouseCollector) Collect(urls []string) error {
+	for i, url := range urls {
+		log.Println("Start running for", url)
 
-	if err != nil {
-		log.Fatal("Error running lighthouse command", err)
+		err := exec.Command(
+			"lighthouse",
+			url,
+			"--chrome-flags='--headless'",
+			"--output-path="+getTmpPath(i),
+			"--output=json",
+		).Run()
+
+		log.Println("End running")
+
+		if err != nil {
+			log.Println("Error running lighthouse command for", url, err)
+			break
+		}
 	}
 
-	log.Println("Saving /temp monitoring")
-	resultFile, err := os.Open("/tmp/reports/mmonitoring.json")
-	if err != nil {
-		log.Fatal(err)
-	}
+	for i, url := range urls {
+		log.Println("Saving monitoring.json")
 
-	log.Println("Adding to storage")
-	err = r.storage.SaveLighthouseResult(url, resultFile)
-	if err != nil {
-		log.Fatal("Error saving lighthouse result", err)
+		resultFile, err := os.Open(getTmpPath(i))
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.Println("Adding to storage", url)
+
+		err = r.storage.SaveLighthouseResult(url, resultFile)
+		if err != nil {
+			log.Fatal("Error saving lighthouse result", err)
+		}
+		log.Println("Adding to storage")
 	}
-	log.Println("Adding to storage")
 
 	return nil
+}
+
+func getTmpPath(index int) string {
+	return "mmonitoring-" + strconv.FormatInt(int64(index), 10) + ".json"
 }

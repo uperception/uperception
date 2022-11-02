@@ -20,7 +20,7 @@ func main() {
 	}
 
 	client := s3.NewFromConfig(cfg)
-	storage := storage.NewAwsStorage(client, "mmontitoring")
+	storage := storage.NewAwsStorage(client, "mmonitoring")
 
 	root.AddCommand(command.RunLighthouse(storage))
 	root.Execute()
