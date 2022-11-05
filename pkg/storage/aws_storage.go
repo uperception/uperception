@@ -5,7 +5,7 @@ import (
 	"io"
 
 	"github.com/aws/aws-sdk-go-v2/service/s3"
-	"github.com/leometzger/mmonitoring-runner/utils"
+	util "github.com/leometzger/mmonitoring/pkg/util"
 )
 
 type AwsStorage struct {
@@ -21,7 +21,7 @@ func NewAwsStorage(client *s3.Client, bucket string) *AwsStorage {
 }
 
 func (s *AwsStorage) SaveLighthouseResult(url string, content io.Reader) error {
-	key := utils.GetPathFromUrl(url)
+	key := util.GetPathFromUrl(url)
 
 	_, err := s.client.PutObject(context.TODO(), &s3.PutObjectInput{
 		Bucket: &s.bucket,

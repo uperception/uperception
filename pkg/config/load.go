@@ -1,4 +1,4 @@
-package utils
+package config
 
 import "github.com/spf13/viper"
 
@@ -8,7 +8,6 @@ type Config struct {
 	Bucket string `mapstructure:"AWS_S3_BUCKET"`
 }
 
-// LoadConfig reads configuration from file or environment variables.
 func LoadConfig(path string) (config Config, err error) {
 	viper.AddConfigPath(path)
 	viper.SetConfigType("env")

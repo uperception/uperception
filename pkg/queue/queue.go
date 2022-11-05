@@ -1,8 +1,6 @@
 package queue
 
-import (
-	"github.com/leometzger/mmonitoring-runner/models"
-)
+import "github.com/leometzger/mmonitoring/pkg/models"
 
 type Task struct {
 	Id      string

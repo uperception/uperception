@@ -6,7 +6,7 @@ import (
 	"os/exec"
 	"strconv"
 
-	"github.com/leometzger/mmonitoring-runner/storage"
+	"github.com/leometzger/mmonitoring/pkg/storage"
 )
 
 type LighthouseCollector struct {

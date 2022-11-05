@@ -1,17 +1,28 @@
 package models
 
+import "gorm.io/gorm"
+
 type Project struct {
+	gorm.Model
+	ID             uint   `gorm:"primary_key"`
+	Name           string `gorm:"index:idx_name,unique"`
+	Token          string
+	Description    string
+	OrganizationID uint
+	Sessions       []Session
+}
+
+type LighthouseProject struct {
 	Domain string
 	Urls   []string
 }
 
-func NewProject(domain string, urls []string) *Project {
-	return &Project{
-		Urls:   urls,
-		Domain: domain,
-	}
+type CreateProjectInput struct {
+	Name        string `binding:"required"`
+	Description string `binding:"required"`
 }
 
-func (p Project) HasAuthentication() bool {
-	return false
+type UpdateProjectInput struct {
+	Name        string `binding:"required"`
+	Description string `binding:"required"`
 }

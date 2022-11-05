@@ -3,7 +3,7 @@ package utils_test
 import (
 	"testing"
 
-	"github.com/leometzger/mmonitoring-runner/utils"
+	utils "github.com/leometzger/mmonitoring/pkg/util"
 	"github.com/stretchr/testify/assert"
 )
 
