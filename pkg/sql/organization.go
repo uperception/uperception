@@ -1,4 +1,4 @@
-package sqlstore
+package sql
 
 import (
 	"github.com/leometzger/mmonitoring/pkg/models"

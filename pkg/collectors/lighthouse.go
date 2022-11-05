@@ -6,6 +6,7 @@ import (
 	"os/exec"
 	"strconv"
 
+	"github.com/leometzger/mmonitoring/pkg/models"
 	"github.com/leometzger/mmonitoring/pkg/storage"
 )
 
@@ -20,29 +21,29 @@ func NewLighthouseCollector(storage storage.Storage) *LighthouseCollector {
 }
 
 // Collects lighthouse data
-func (r *LighthouseCollector) Collect(urls []string) error {
-	for i, url := range urls {
+func (r *LighthouseCollector) Collect(project models.Project) error {
+	for i, endpoint := range project.LighthouseConfig.Endpoints {
 		err := exec.Command(
 			"lighthouse",
-			url,
+			endpoint.Url,
 			"--chrome-flags='--headless'",
 			"--output-path="+getTmpPath(i),
 			"--output=json",
 		).Run()
 
 		if err != nil {
-			log.Println("Error running lighthouse command for", url, err)
+			log.Println("Error running lighthouse command for", endpoint.Url, err)
 			break
 		}
 	}
 
-	for i, url := range urls {
+	for i, endpoint := range project.LighthouseConfig.Endpoints {
 		resultFile, err := os.Open(getTmpPath(i))
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		err = r.storage.SaveLighthouseResult(url, resultFile)
+		err = r.storage.SaveLighthouseResult(endpoint.Url, resultFile)
 		if err != nil {
 			log.Fatal("Error saving lighthouse result", err)
 		}

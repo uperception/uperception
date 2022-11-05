@@ -1,13 +1,12 @@
 package app
 
 import (
-	"github.com/leometzger/mmonitoring/pkg/storage"
-	"github.com/leometzger/mmonitoring/pkg/storage/sqlstore"
+	"github.com/leometzger/mmonitoring/pkg/sql"
 )
 
 type App struct {
 	Config AppConfig
-	store  storage.Store
+	store  sql.Store
 }
 
 type AppConfig struct{}
@@ -15,6 +14,6 @@ type AppConfig struct{}
 func NewApp() *App {
 	return &App{
 		Config: AppConfig{},
-		store:  sqlstore.NewSQLStore(),
+		store:  sql.NewSQLStore(),
 	}
 }

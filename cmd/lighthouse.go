@@ -39,11 +39,11 @@ func main() {
 		log.Fatal().Msg("Getting Task: " + err.Error())
 	}
 
-	if len(task.Project.Urls) == 0 {
+	if len(task.Project.LighthouseConfig.Endpoints) == 0 {
 		return
 	}
 
-	err = lighthouse.Collect(task.Project.Urls)
+	err = lighthouse.Collect(task.Project)
 	if err != nil {
 		log.Fatal().Msg("Collecting Lighthouse Data:" + err.Error())
 	}

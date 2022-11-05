@@ -56,3 +56,7 @@ func (a App) DeleteProject(id string) error {
 
 	return nil
 }
+
+func (a App) UpdateLighthouseConfig(id string, input *models.UpdateLighthouseConfigInput) (*models.LighthouseConfig, error) {
+	return nil, nil
+}

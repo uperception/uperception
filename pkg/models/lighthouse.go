@@ -1,13 +1,20 @@
 package models
 
-type LighthouseResult struct {
-	Project Project
-	Url     string
+type LighthouseConfig struct {
+	ID          uint `gorm:"primary_key"`
+	Enabled     bool
+	Periodicity uint8
+	Endpoints   []LighthouseEndpoint
 }
 
-func NewLighthouseResult(project Project, url string) *LighthouseResult {
-	return &LighthouseResult{
-		Project: project,
-		Url:     url,
-	}
+type UpdateLighthouseConfigInput struct {
+	Enabled     bool
+	Periodicity uint8
+	Endpoints   []LighthouseEndpoint
+}
+
+type LighthouseEndpoint struct {
+	ID     uint `gorm:"primary_key"`
+	Url    string
+	Header string
 }

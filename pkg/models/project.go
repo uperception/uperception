@@ -4,17 +4,12 @@ import "gorm.io/gorm"
 
 type Project struct {
 	gorm.Model
-	ID             uint   `gorm:"primary_key"`
-	Name           string `gorm:"index:idx_name,unique"`
-	Token          string
-	Description    string
-	OrganizationID uint
-	Sessions       []Session
-}
-
-type LighthouseProject struct {
-	Domain string
-	Urls   []string
+	ID               uint   `gorm:"primary_key"`
+	Name             string `gorm:"index:idx_name,unique"`
+	Description      string
+	OrganizationID   uint
+	LighthouseConfig LighthouseConfig
+	Sessions         []Session
 }
 
 type CreateProjectInput struct {

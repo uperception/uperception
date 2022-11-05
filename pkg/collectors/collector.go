@@ -1,5 +1,7 @@
 package collectors
 
+import "github.com/leometzger/mmonitoring/pkg/models"
+
 type Collector interface {
-	Collect(url string) error
+	Collect(project models.Project) error
 }
