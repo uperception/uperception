@@ -1,0 +1,40 @@
+version: '3.9'
+
+services:
+  mmonitoring-collector:
+    build: .
+    networks:
+      - mmonitoring-network
+
+  mmonitoring-db:
+    image: postgres:15-alpine
+    restart: always
+    networks:
+      - mmonitoring-network
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+
+  localstack:
+    image: localstack/localstack:1.1.0
+    container_name: localstack
+    networks:
+      - mmonitoring-network
+    environment:
+      - EDGE_PORT=4566
+      - SERVICES=s3,sqs
+      - DEBUG=1
+      - DATA_DIR=/tmp/localstack/data
+    ports:
+      - ${PORT_LOCALSTACK:-4563-4599}:4563-4599
+    volumes:
+      - ./docker/localstack/entrypoint:/docker-entrypoint-initaws.d
+      - localstack:/tmp/localstack
+
+
+networks:
+  mmonitoring-network:
+
+volumes:
+  localstack:

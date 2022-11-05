@@ -1,9 +1,9 @@
 package command
 
 import (
-	"github.com/leometzger/mmonitoring-runner/collectors"
-	"github.com/leometzger/mmonitoring-runner/queue"
-	"github.com/leometzger/mmonitoring-runner/storage"
+	"github.com/leometzger/mmonitoring-runner/pkg/collectors"
+	"github.com/leometzger/mmonitoring-runner/pkg/queue"
+	"github.com/leometzger/mmonitoring-runner/pkg/storage"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 )
