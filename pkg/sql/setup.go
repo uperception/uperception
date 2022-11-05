@@ -30,6 +30,7 @@ func SetupModels(dbType DBType) *gorm.DB {
 	db.AutoMigrate(&models.Session{})
 	db.AutoMigrate(&models.User{})
 	db.AutoMigrate(&models.Organization{})
+	db.AutoMigrate(&models.LighthouseConfig{})
 
 	Instance = db
 
@@ -43,8 +44,8 @@ func getDatabaseByType(dbType DBType) (*gorm.DB, error) {
 
 	case Postgres:
 		viper.AutomaticEnv()
-		pg_user := "admin"
-		pg_password := "admin"
+		pg_user := "mmonitoring"
+		pg_password := "12345"
 		pg_db := "mmonitoring"
 		pg_host := "localhost"
 		pg_port := "5432"

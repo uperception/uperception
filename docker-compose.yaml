@@ -2,23 +2,48 @@ version: '3.9'
 
 services:
   mmonitoring-collector:
-    build: .
+    container_name: lighthouse-collector
+    build: 
+      dockerfile: ./docker/lighthouse/Dockerfile
+      context: .
     networks:
       - mmonitoring-network
+    depends_on:
+      - mmonitoring-db
+      - localstack
+
+  api:
+    container_name: api
+    build: 
+      context: .
+      dockerfile: ./docker/api/Dockerfile
+    ports:
+      - 3000:3000
+    networks:
+      - mmonitoring-network
+    depends_on:
+      - mmonitoring-db
+
 
   mmonitoring-db:
+    container_name: db
     image: postgres:15-alpine
     restart: always
+    ports:
+      - '5432:5432'
     networks:
       - mmonitoring-network
+    volumes:
+      - mmonitoring_data:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
 
+
   localstack:
-    image: localstack/localstack:1.1.0
     container_name: localstack
+    image: localstack/localstack:1.1.0
     networks:
       - mmonitoring-network
     environment:
@@ -32,9 +57,9 @@ services:
       - ./docker/localstack/entrypoint:/docker-entrypoint-initaws.d
       - localstack:/tmp/localstack
 
-
 networks:
   mmonitoring-network:
 
 volumes:
   localstack:
+  mmonitoring_data:
