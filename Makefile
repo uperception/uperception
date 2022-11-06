@@ -1,5 +1,5 @@
 dev:
-	docker compose --env-file="./.env" up
+	docker compose --profile database --env-file="./.env" up
 
 test:
 	go test

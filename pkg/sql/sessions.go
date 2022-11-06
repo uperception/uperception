@@ -9,6 +9,12 @@ type SQLSessionsStore struct {
 	db *gorm.DB
 }
 
+func NewSessionStore() *SQLSessionsStore {
+	return &SQLSessionsStore{
+		db: Instance,
+	}
+}
+
 // Saves the session
 func (s SQLSessionsStore) Save(session *models.Session) error {
 	err := s.db.Save(session).Error

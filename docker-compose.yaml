@@ -3,6 +3,8 @@ version: '3.9'
 services:
   mmonitoring-collector:
     container_name: lighthouse-collector
+    profiles:
+      - "worker"
     build: 
       dockerfile: ./docker/lighthouse/Dockerfile
       context: .
@@ -14,6 +16,8 @@ services:
 
   api:
     container_name: api
+    profiles:
+      - "api"
     build: 
       context: .
       dockerfile: ./docker/api/Dockerfile
@@ -29,6 +33,8 @@ services:
     container_name: db
     image: postgres:15-alpine
     restart: always
+    profiles:
+      - "database"
     ports:
       - '5432:5432'
     networks:
@@ -43,6 +49,8 @@ services:
 
   localstack:
     container_name: localstack
+    profiles:
+      - "database"
     image: localstack/localstack:1.1.0
     networks:
       - mmonitoring-network

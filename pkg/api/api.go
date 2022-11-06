@@ -41,6 +41,7 @@ func NewApi() *Api {
 		v1.POST("/projects", a.CreateProject)
 		v1.PUT("/projects/:id", a.UpdateProject)
 		v1.DELETE("/projects/:id", a.DeleteProject)
+		v1.PUT("/projects/:id/lighthouse", a.UpdateLighthouseConfig)
 
 		// Sessions
 		// v1.GET("/projects/:id/sessions", a.QuerySessions)

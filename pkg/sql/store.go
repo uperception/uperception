@@ -2,13 +2,6 @@ package sql
 
 import "github.com/leometzger/mmonitoring/pkg/models"
 
-type Store interface {
-	// Storage() Storage
-	OrganizationStore() OrganizationStore
-	ProjectStore() ProjectStore
-	SessionStore() SessionStore
-}
-
 type ProjectStore interface {
 	List() ([]*models.Project, error)
 	FindById(id string) (*models.Project, error)
@@ -33,6 +26,17 @@ type SessionStore interface {
 type UserStore interface {
 	Save(project *models.User) error
 	Update(project *models.User) error
+	Delete(id string) error
+}
+
+type LighthouseConfigStore interface {
+	Save(config *models.LighthouseConfig) error
+	Update(config *models.LighthouseConfig) error
+	Delete(id string) error
+}
+
+type LighthouseResultStore interface {
+	Save(result *models.LighthouseResult) error
 	Delete(id string) error
 }
 

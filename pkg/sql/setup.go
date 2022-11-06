@@ -30,7 +30,11 @@ func SetupModels(dbType DBType) *gorm.DB {
 	db.AutoMigrate(&models.Session{})
 	db.AutoMigrate(&models.User{})
 	db.AutoMigrate(&models.Organization{})
+
 	db.AutoMigrate(&models.LighthouseConfig{})
+	db.AutoMigrate(&models.LighthouseEndpoint{})
+	db.AutoMigrate(&models.LighthouseMetric{})
+	db.AutoMigrate(&models.LighthouseResult{})
 
 	Instance = db
 

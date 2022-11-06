@@ -9,6 +9,12 @@ type SQLOrganizationStore struct {
 	db *gorm.DB
 }
 
+func NewOrganizationStore() *SQLOrganizationStore {
+	return &SQLOrganizationStore{
+		db: Instance,
+	}
+}
+
 func (s SQLOrganizationStore) List() ([]*models.Organization, error) {
 	var organizations []*models.Organization
 	err := s.db.Find(&organizations).Error

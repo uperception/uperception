@@ -9,6 +9,12 @@ type SQLProjectStore struct {
 	db *gorm.DB
 }
 
+func NewProjectStore() *SQLProjectStore {
+	return &SQLProjectStore{
+		db: Instance,
+	}
+}
+
 // Lists all projects
 func (s SQLProjectStore) List() ([]*models.Project, error) {
 	var projects []*models.Project
@@ -43,7 +49,7 @@ func (s SQLProjectStore) FindByName(name string) (*models.Project, error) {
 
 // Saves the project
 func (s SQLProjectStore) Save(project *models.Project) error {
-	err := s.db.Save(project).Error
+	err := s.db.Omit("OrganizationID").Save(project).Error
 
 	return err
 }

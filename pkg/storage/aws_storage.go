@@ -36,7 +36,7 @@ func (s *AwsStorage) SaveLighthouseResult(url string, content io.Reader) error {
 	return err
 }
 
-func (s *AwsStorage) AddAvatar() {}
-func (s *AwsStorage) RemoveAvatar()
-func (s *AwsStorage) AddOrganizationLogo()
-func (s *AwsStorage) RemoveOrganizationLogo()
+func (s *AwsStorage) AddAvatar()              {}
+func (s *AwsStorage) RemoveAvatar()           {}
+func (s *AwsStorage) AddOrganizationLogo()    {}
+func (s *AwsStorage) RemoveOrganizationLogo() {}
