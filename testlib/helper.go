@@ -10,7 +10,6 @@ func ResetDatabase() {
 	sql.Instance.Delete(&models.User{})
 	sql.Instance.Delete(&models.Session{})
 	sql.Instance.Delete(&models.Project{})
-
 	sql.Instance.Delete(&models.LighthouseConfig{})
 	sql.Instance.Delete(&models.LighthouseResult{})
 	sql.Instance.Delete(&models.LighthouseMetric{})

@@ -1,8 +1,9 @@
-package app
+package app_test
 
 import (
 	"testing"
 
+	"github.com/leometzger/mmonitoring/pkg/app"
 	"github.com/leometzger/mmonitoring/pkg/models"
 	"github.com/leometzger/mmonitoring/pkg/sql"
 	"github.com/stretchr/testify/assert"
@@ -11,7 +12,7 @@ import (
 func TestCreateOrganization(t *testing.T) {
 	sql.SetupModels(sql.SQLite)
 	// defer testlib.ResetDatabase()
-	app := NewApp()
+	app := app.NewApp()
 
 	organization, err := app.CreateOrganization(models.CreateOrganizationInput{
 		Name:        "Testing",

@@ -26,7 +26,7 @@ func (s SQLProjectStore) List() ([]*models.Project, error) {
 // Finds the project with the specified ID
 func (s SQLProjectStore) FindById(id string) (*models.Project, error) {
 	var project models.Project
-	err := s.db.Where("id = ?", id).First(&project).Error
+	err := s.db.Preload("LighthouseConfig").Preload("LighthouseConfig.Endpoints").Where("id = ?", id).First(&project).Error
 
 	if err != nil {
 		return nil, err
