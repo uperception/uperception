@@ -39,7 +39,7 @@ func (s SQLOrganizationStore) Save(organization *models.Organization) error {
 }
 
 func (s SQLOrganizationStore) Delete(id string) error {
-	err := s.db.Delete(models.Organization{}, id).Error
+	err := s.db.Delete(&models.Organization{}, id).Error
 
 	return err
 }

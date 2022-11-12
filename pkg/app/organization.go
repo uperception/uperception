@@ -42,6 +42,10 @@ func (a App) FindOrganization(id string) (*models.Organization, error) {
 	return a.organizationStore.FindById(id)
 }
 
+func (a App) DeleteOrganization(id string) error {
+	return a.organizationStore.Delete(id)
+}
+
 func (a App) AddProjectToOrg(projectId string, orgId string) {
 
 }
