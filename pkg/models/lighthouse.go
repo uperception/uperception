@@ -65,6 +65,7 @@ type UpdateLighthouseConfigInput struct {
 }
 
 type LighthouseEndpointInput struct {
+	ID     uint
 	Url    string `binding:"required"`
 	Header string
 }

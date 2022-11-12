@@ -21,7 +21,7 @@ func NewLighthouseCollector(storage storage.Storage) *LighthouseCollector {
 }
 
 // Collects lighthouse data
-func (r *LighthouseCollector) Collect(project models.Project) error {
+func (r *LighthouseCollector) Collect(project *models.Project) error {
 	for i, endpoint := range project.LighthouseConfig.Endpoints {
 		err := exec.Command(
 			"lighthouse",

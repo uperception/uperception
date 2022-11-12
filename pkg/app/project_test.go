@@ -7,14 +7,16 @@ import (
 	"github.com/leometzger/mmonitoring/pkg/app"
 	"github.com/leometzger/mmonitoring/pkg/models"
 	"github.com/leometzger/mmonitoring/pkg/sql"
+	"github.com/leometzger/mmonitoring/testlib"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCreateProject(t *testing.T) {
+func TestProjectBasicOperations(t *testing.T) {
 	sql.SetupModels(sql.SQLite)
-	// defer testlib.ResetDatabase()
+	defer testlib.ResetDatabase()
 	app := app.NewApp()
 
+	// Create
 	project, err := app.CreateProject(models.CreateProjectInput{
 		Name:        "Testing Project",
 		Description: "Testing Description",
@@ -22,31 +24,40 @@ func TestCreateProject(t *testing.T) {
 
 	assert.NoError(t, err)
 	assert.Equal(t, uint(1), project.ID)
+
+	// Find
+	project, err = app.FindProject("1")
+	assert.NoError(t, err)
+	assert.Equal(t, project.Name, "Testing Project")
+
+	// Update
+	project, err = app.UpdateProject("1", models.UpdateProjectInput{
+		Name:        "Testing Project v2",
+		Description: "Testing Description v2",
+	})
+
+	assert.NoError(t, err)
+	assert.Equal(t, uint(1), project.ID)
+	assert.Equal(t, project.Name, "Testing Project v2")
+
+	// Delete
+	err = app.DeleteProject("1")
+	assert.NoError(t, err)
+
+	_, err = app.FindProject("1")
+	assert.Error(t, err)
 }
 
-// func TestUpdateProject(t *testing.T) {
-// 	sql.SetupModels(sql.SQLite)
-// 	defer testlib.ResetDatabase()
-// 	app := NewApp()
-//
-// 	project, err := app.UpdateProject("1", models.UpdateProjectInput{
-// 		Name:        "Testing Project v2",
-// 		Description: "Testing Description v2",
-// 	})
-//
-// 	assert.NoError(t, err)
-// 	assert.Equal(t, uint(1), project.ID)
-// }
-
-func TestUpdateLighthouseConfig(t *testing.T) {
+func TestUpdateProjectLighthouseConfig(t *testing.T) {
 	sql.SetupModels(sql.SQLite)
-	// defer testlib.ResetDatabase()
+	defer testlib.ResetDatabase()
 	app := app.NewApp()
 
 	project, err := app.CreateProject(models.CreateProjectInput{
-		Name:        "Testing Project",
+		Name:        "Testing Project With Lighthouse Config",
 		Description: "Testing Description",
 	})
+	assert.NoError(t, err)
 	projectID := strconv.FormatUint(uint64(project.ID), 10)
 
 	config, err := app.UpdateLighthouseConfig(
@@ -67,16 +78,22 @@ func TestUpdateLighthouseConfig(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, config.ID, project.LighthouseConfig.ID)
 	assert.Equal(t, 2, len(project.LighthouseConfig.Endpoints))
-}
 
-// func TestUpdateLighthouseConfigUpdate(t *testing.T) {
-// 	sql.SetupModels(sql.SQLite)
-// 	app := NewApp()
-//
-// 	config, err := app.UpdateLighthouseConfig(models.UpdateLighthouseConfigInput{
-// 	})
-//
-// 	assert.NoError(t, err)
-// 	assert.Equal(t, uint(1), config.ID)
-// }
-//
+	_, err = app.UpdateLighthouseConfig(
+		projectID,
+		&models.UpdateLighthouseConfigInput{
+			Enabled:     false,
+			Periodicity: 1,
+			Endpoints: []models.LighthouseEndpointInput{
+				{ID: 1, Url: "https://google.com"},
+				{ID: 2, Url: "https://facebook.com"},
+				{Url: "https://private.com", Header: "Basic 1234"},
+			},
+		})
+	assert.NoError(t, err)
+
+	project, err = app.FindProject(projectID)
+	assert.NoError(t, err)
+	assert.Equal(t, false, project.LighthouseConfig.Enabled)
+	assert.Equal(t, 3, len(project.LighthouseConfig.Endpoints))
+}

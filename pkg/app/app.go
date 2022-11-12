@@ -1,19 +1,17 @@
 package app
 
 import (
-	"github.com/leometzger/mmonitoring/pkg/queue"
 	"github.com/leometzger/mmonitoring/pkg/sql"
-	"github.com/leometzger/mmonitoring/pkg/storage"
 )
 
 type App struct {
-	Config                AppConfig
-	queue                 queue.Queue
-	storage               storage.Storage
+	Config AppConfig
+	// queue                 queue.Queue
+	// storage               storage.Storage
+	// userStore             sql.UserStore
 	projectStore          sql.ProjectStore
 	organizationStore     sql.OrganizationStore
 	sessionsStore         sql.SessionStore
-	userStore             sql.UserStore
 	lighthouseResultStore sql.LighthouseResultStore
 	lighthouseConfigStore sql.LighthouseConfigStore
 }

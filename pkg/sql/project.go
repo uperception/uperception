@@ -63,7 +63,7 @@ func (s SQLProjectStore) Update(project *models.Project) error {
 
 // Deletes the project with the specified ID
 func (s SQLProjectStore) Delete(id string) error {
-	err := s.db.Delete(models.Project{}, id).Error
+	err := s.db.Delete(&models.Project{}, id).Error
 
 	return err
 }

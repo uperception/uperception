@@ -74,6 +74,7 @@ func (a App) UpdateLighthouseConfig(id string, input *models.UpdateLighthouseCon
 
 	for _, endpoint := range input.Endpoints {
 		lighthouseConfig.Endpoints = append(lighthouseConfig.Endpoints, models.LighthouseEndpoint{
+			ID:     endpoint.ID,
 			Header: endpoint.Header,
 			Url:    endpoint.Url,
 		})
