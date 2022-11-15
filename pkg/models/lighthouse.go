@@ -33,13 +33,13 @@ type LighthouseResult struct {
 	gorm.Model
 	ID                 uint `gorm:"primary_key"`
 	LighthouseConfigID uint
-	Environment        Environment
 	GatherMode         string           `json:"gatherMode"`
+	Environment        Environment      `json:"-"`
 	Audits             LighthouseAudits `json:"audits"`
 }
 
 type LighthouseAudits struct {
-	ID                     uint             `gorm:"primary_key"`
+	ID                     uint             `gorm:"primary_key" json:"-"`
 	LighthouseResultID     uint             `gorm:"index:idx_result"`
 	FirstContentfulPaint   LighthouseMetric `json:"first-contentful-paint"`
 	FirstMeaningfulPaint   LighthouseMetric `json:"first-meaningful-paint"`
@@ -53,9 +53,8 @@ type LighthouseAudits struct {
 }
 
 type LighthouseMetric struct {
-	gorm.Model
-	ID                 uint    `gorm:"primary_key"`
-	LighthouseAuditsID uint    `gorm:"index:idx_audits"`
+	ID                 uint    `gorm:"primary_key" json:"-"`
+	LighthouseAuditsID uint    `gorm:"index:idx_audits" json:"-"`
 	Title              string  `json:"title"`
 	Unit               string  `json:"unit"`
 	Score              float32 `json:"score"`

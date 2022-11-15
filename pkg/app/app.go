@@ -44,7 +44,7 @@ func NewApp() *App {
 
 	s3Client := s3.NewFromConfig(cfg)
 	storage := storage.NewAwsStorage(s3Client, appConfig.Bucket)
-	lighthouse := collectors.NewLighthouseCollector(storage)
+	lighthouse := collectors.NewLighthouseCollector(storage, sql.NewLighthouseResultStore())
 
 	return &App{
 		config:                appConfig,

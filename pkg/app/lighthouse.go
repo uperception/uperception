@@ -21,15 +21,22 @@ func (a App) CollectLighthouseData() error {
 		log.Fatal().Msg("Error consuming the task")
 	}
 
+	if task == nil {
+		log.Info().Msg("No queued task to run")
+		return nil
+	}
+
 	project, err := a.projectStore.FindById(strconv.FormatUint(uint64(task.ProjectID), 10))
 	if err != nil {
 		log.Fatal().Msg("Project not found!" + err.Error())
 	}
+	log.Info().Msg("Collecting lighthouse metrics for " + project.Name)
 
 	err = a.lighthouseCollector.Collect(project)
 	if err != nil {
 		log.Fatal().Msg("Error collecting lighthouse data" + err.Error())
 	}
+
 	return err
 }
 
