@@ -16,7 +16,7 @@ import (
 
 type App struct {
 	// userStore             sql.UserStore
-	config                mConfig.Config
+	config                *mConfig.Config
 	queue                 queue.Queue
 	storage               storage.Storage
 	projectStore          sql.ProjectStore
@@ -27,12 +27,7 @@ type App struct {
 	lighthouseConfigStore sql.LighthouseConfigStore
 }
 
-func NewApp() *App {
-	appConfig, err := mConfig.LoadConfig(".")
-	if err != nil {
-		log.Fatal(err)
-	}
-
+func NewApp(appConfig *mConfig.Config) *App {
 	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion(appConfig.Region))
 	if err != nil {
 		log.Fatal(err)

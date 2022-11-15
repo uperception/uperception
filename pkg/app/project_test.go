@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/leometzger/mmonitoring/pkg/app"
+	"github.com/leometzger/mmonitoring/pkg/config"
 	"github.com/leometzger/mmonitoring/pkg/models"
 	"github.com/leometzger/mmonitoring/pkg/sql"
 	"github.com/leometzger/mmonitoring/testlib"
@@ -14,7 +15,7 @@ import (
 func TestProjectBasicOperations(t *testing.T) {
 	sql.SetupModels(sql.SQLite)
 	defer testlib.ResetDatabase()
-	app := app.NewApp()
+	app := app.NewApp(&config.Config{})
 
 	// Create
 	project, err := app.CreateProject(models.CreateProjectInput{
@@ -51,7 +52,7 @@ func TestProjectBasicOperations(t *testing.T) {
 func TestUpdateProjectLighthouseConfig(t *testing.T) {
 	sql.SetupModels(sql.SQLite)
 	defer testlib.ResetDatabase()
-	app := app.NewApp()
+	app := app.NewApp(&config.Config{})
 
 	project, err := app.CreateProject(models.CreateProjectInput{
 		Name:        "Testing Project With Lighthouse Config",

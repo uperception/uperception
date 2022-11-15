@@ -8,6 +8,7 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 var Instance *gorm.DB
@@ -46,7 +47,9 @@ func SetupModels(dbType DBType) *gorm.DB {
 func getDatabaseByType(dbType DBType) (*gorm.DB, error) {
 	switch dbType {
 	case SQLite:
-		return gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{})
+		return gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{
+			Logger: logger.Default.LogMode(logger.Silent),
+		})
 
 	case Postgres:
 		viper.AutomaticEnv()

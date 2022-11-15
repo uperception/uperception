@@ -80,6 +80,10 @@ func (a App) UpdateLighthouseConfig(id string, input *models.UpdateLighthouseCon
 		})
 	}
 
+	if project.LighthouseConfig.ID == 0 && len(input.Endpoints) > 0 {
+		a.queue.Publish(project.ID)
+	}
+
 	err = a.lighthouseConfigStore.Save(lighthouseConfig)
 	if err != nil {
 		return nil, err

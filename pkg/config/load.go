@@ -14,7 +14,7 @@ type Config struct {
 	DBPort     string `mapstructure:"DB_PORT"`
 }
 
-func LoadConfig(path string) (config Config, err error) {
+func LoadConfig(path string) (config *Config, err error) {
 	viper.AddConfigPath(path)
 	viper.SetConfigType("env")
 	viper.AutomaticEnv()

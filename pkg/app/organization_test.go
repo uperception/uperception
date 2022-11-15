@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/leometzger/mmonitoring/pkg/app"
+	"github.com/leometzger/mmonitoring/pkg/config"
 	"github.com/leometzger/mmonitoring/pkg/models"
 	"github.com/leometzger/mmonitoring/pkg/sql"
 	"github.com/leometzger/mmonitoring/testlib"
@@ -14,7 +15,7 @@ func TestCreateOrganization(t *testing.T) {
 
 	sql.SetupModels(sql.SQLite)
 	defer testlib.ResetDatabase()
-	app := app.NewApp()
+	app := app.NewApp(&config.Config{})
 
 	organization, err := app.CreateOrganization(models.CreateOrganizationInput{
 		Name:        "Testing",

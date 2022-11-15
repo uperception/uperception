@@ -9,6 +9,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/leometzger/mmonitoring/pkg/app"
+	"github.com/leometzger/mmonitoring/pkg/config"
 )
 
 type Api struct {
@@ -16,10 +17,10 @@ type Api struct {
 	Router *gin.Engine
 }
 
-func NewApi() *Api {
+func NewApi(config *config.Config) *Api {
 	router := gin.Default()
 	a := Api{
-		App:    app.NewApp(),
+		App:    app.NewApp(config),
 		Router: router,
 	}
 
