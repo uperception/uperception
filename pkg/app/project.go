@@ -62,7 +62,7 @@ func (a App) DeleteProject(id string) error {
 func (a App) UpdateLighthouseConfig(id string, input *models.UpdateLighthouseConfigInput) (*models.LighthouseConfig, error) {
 	project, err := a.projectStore.FindById(id)
 	if err != nil {
-		return nil, err
+		return nil, models.ErrNotFound
 	}
 
 	lighthouseConfig := &models.LighthouseConfig{

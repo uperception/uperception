@@ -84,7 +84,7 @@ func (a *Api) UpdateLighthouseConfig(c *gin.Context) {
 
 	lighthouseConfig, err := a.App.UpdateLighthouseConfig(c.Param("id"), &input)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(getStatus(err), gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"data": lighthouseConfig})

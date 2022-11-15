@@ -19,10 +19,10 @@ type App struct {
 	config                *mConfig.Config
 	queue                 queue.Queue
 	storage               storage.Storage
+	lighthouseCollector   collectors.Collector
 	projectStore          sql.ProjectStore
 	organizationStore     sql.OrganizationStore
 	sessionsStore         sql.SessionStore
-	lighthouseCollector   collectors.Collector
 	lighthouseResultStore sql.LighthouseResultStore
 	lighthouseConfigStore sql.LighthouseConfigStore
 }
