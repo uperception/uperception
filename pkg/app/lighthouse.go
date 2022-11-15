@@ -4,7 +4,6 @@ import (
 	"strconv"
 
 	"github.com/leometzger/mmonitoring/pkg/models"
-	"github.com/rs/zerolog/log"
 )
 
 func (a App) EnqueueLighthouseTask(project *models.Project) error {
@@ -18,23 +17,26 @@ func (a App) EnqueueAllLighthouseTasks() error {
 func (a App) CollectLighthouseData() error {
 	task, err := a.queue.GetTask()
 	if err != nil {
-		log.Fatal().Msg("Error consuming the task")
+		return err
 	}
 
 	if task == nil {
-		log.Info().Msg("No queued task to run")
 		return nil
 	}
 
 	project, err := a.projectStore.FindById(strconv.FormatUint(uint64(task.ProjectID), 10))
 	if err != nil {
-		log.Fatal().Msg("Project not found!" + err.Error())
+		return err
 	}
-	log.Info().Msg("Collecting lighthouse metrics for " + project.Name)
 
 	err = a.lighthouseCollector.Collect(project)
 	if err != nil {
-		log.Fatal().Msg("Error collecting lighthouse data" + err.Error())
+		return err
+	}
+
+	err = a.queue.FinishTask(task.Id)
+	if err != nil {
+		return err
 	}
 
 	return err

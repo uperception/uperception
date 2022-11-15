@@ -10,7 +10,6 @@ import (
 	"github.com/leometzger/mmonitoring/pkg/models"
 	"github.com/leometzger/mmonitoring/pkg/sql"
 	"github.com/leometzger/mmonitoring/pkg/storage"
-	"github.com/rs/zerolog/log"
 )
 
 type LighthouseCollector struct {
@@ -37,38 +36,34 @@ func (r *LighthouseCollector) Collect(project *models.Project) error {
 		).Run()
 
 		if err != nil {
-			log.Fatal().Msg("Error running lighthouse command for" + endpoint.Url + err.Error())
+			return err
 		}
 	}
 
 	for i, endpoint := range project.LighthouseConfig.Endpoints {
 		resultFile, err := os.Open(getTmpPath(i))
 		if err != nil {
-			log.Err(err).Msg("Error opening lighthouse result file")
 			return err
 		}
 
 		file, err := ioutil.ReadFile(getTmpPath(i))
 		if err != nil {
-			log.Err(err).Msg("Error reading lighthouse file")
 			return err
 		}
 
 		var result models.LighthouseResult
 		err = json.Unmarshal([]byte(file), &result)
 		if err != nil {
-			log.Err(err).Msg("Error unmarshaling lighthouse result")
 			return err
 		}
 
 		err = r.store.Save(&result)
 		if err != nil {
-			log.Err(err).Msg("Error saving lighthouse result into database")
+			return err
 		}
 
 		err = r.storage.SaveLighthouseResult(endpoint.Url, resultFile)
 		if err != nil {
-			log.Err(err).Msg("Error saving lighthouse result into storage")
 			return err
 		}
 	}

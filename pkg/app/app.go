@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"log"
 
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
@@ -11,8 +12,6 @@ import (
 	"github.com/leometzger/mmonitoring/pkg/queue"
 	"github.com/leometzger/mmonitoring/pkg/sql"
 	"github.com/leometzger/mmonitoring/pkg/storage"
-
-	"github.com/rs/zerolog/log"
 )
 
 type App struct {
@@ -31,12 +30,12 @@ type App struct {
 func NewApp() *App {
 	appConfig, err := mConfig.LoadConfig(".")
 	if err != nil {
-		log.Fatal().Msg(err.Error())
+		log.Fatal(err)
 	}
 
 	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion(appConfig.Region))
 	if err != nil {
-		log.Fatal().Msg(err.Error())
+		log.Fatal(err)
 	}
 
 	sqsClient := sqs.NewFromConfig(cfg)
