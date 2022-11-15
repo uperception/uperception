@@ -16,5 +16,6 @@
 
 *.env
 .env
+mm.env
 
 .vscode/

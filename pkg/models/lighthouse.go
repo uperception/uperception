@@ -4,6 +4,14 @@ import (
 	"gorm.io/gorm"
 )
 
+type Environment uint8
+
+const (
+	Mobile Environment = iota
+	Desktop
+	Tablet
+)
+
 type LighthouseConfig struct {
 	gorm.Model
 	ID          uint `gorm:"primary_key"`
@@ -23,27 +31,35 @@ type LighthouseEndpoint struct {
 
 type LighthouseResult struct {
 	gorm.Model
-	ID                     uint `gorm:"primary_key"`
-	LighthouseConfigID     uint
-	FirstContentfulPaint   LighthouseMetric
-	FirstMeaningfulPaint   LighthouseMetric
-	LargestContentfulPaint LighthouseMetric
-	SpeedIndex             LighthouseMetric
-	TotalBlockingTime      LighthouseMetric
-	MaxPotentialFid        LighthouseMetric
-	TimeToInteractive      LighthouseMetric
-	NetworkRoundTripTimes  LighthouseMetric
-	NetworkServerLatency   LighthouseMetric
+	ID                 uint `gorm:"primary_key"`
+	LighthouseConfigID uint
+	Environment        Environment
+	GatherMode         string           `json:"gatherMode"`
+	Audits             LighthouseAudits `json:"audits"`
+}
+
+type LighthouseAudits struct {
+	ID                     uint             `gorm:"primary_key"`
+	LighthouseResultID     uint             `gorm:"index:idx_result"`
+	FirstContentfulPaint   LighthouseMetric `json:"first-contentful-paint"`
+	FirstMeaningfulPaint   LighthouseMetric `json:"first-meaningful-paint"`
+	LargestContentfulPaint LighthouseMetric `json:"largest-contentful-paint"`
+	SpeedIndex             LighthouseMetric `json:"speed-index"`
+	TotalBlockingTime      LighthouseMetric `json:"total-blocking-time"`
+	MaxPotentialFid        LighthouseMetric `json:"max-potential-fid"`
+	TimeToInteractive      LighthouseMetric `json:"time-to-interactive"`
+	NetworkRoundTripTimes  LighthouseMetric `json:"network-round-trip-times"`
+	NetworkServerLatency   LighthouseMetric `json:"network-server-latency"`
 }
 
 type LighthouseMetric struct {
 	gorm.Model
-	ID                 uint `gorm:"primary_key"`
-	LighthouseResultID uint
-	Title              string
-	Unit               string
-	Score              float32
-	Value              float32
+	ID                 uint    `gorm:"primary_key"`
+	LighthouseAuditsID uint    `gorm:"index:idx_audits"`
+	Title              string  `json:"title"`
+	Unit               string  `json:"unit"`
+	Score              float32 `json:"score"`
+	Value              float32 `json:"value"`
 }
 
 type CreateLighthouseResultInput struct {

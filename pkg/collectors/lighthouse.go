@@ -33,7 +33,6 @@ func (r *LighthouseCollector) Collect(project *models.Project) error {
 
 		if err != nil {
 			log.Println("Error running lighthouse command for", endpoint.Url, err)
-			break
 		}
 	}
 
