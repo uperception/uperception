@@ -75,22 +75,6 @@ func (a App) UpdateLighthouseConfig(id string, input *models.UpdateLighthouseCon
 		ProjectID:   project.ID,
 	}
 
-	for _, endpoint := range input.Endpoints {
-		lighthouseConfig.Endpoints = append(
-			lighthouseConfig.Endpoints,
-			models.LighthouseEndpoint{
-				ID:                 endpoint.ID,
-				LighthouseConfigID: lighthouseConfig.ID,
-				Url:                endpoint.Url,
-				Header:             endpoint.Header,
-			},
-		)
-	}
-
-	if len(input.Endpoints) > 0 {
-		a.queue.Publish(project.ID)
-	}
-
 	err = a.lighthouseConfigStore.Save(lighthouseConfig)
 	if err != nil {
 		return nil, err

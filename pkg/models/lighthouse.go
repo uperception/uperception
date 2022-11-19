@@ -72,9 +72,8 @@ type CreateLighthouseResultInput struct {
 }
 
 type UpdateLighthouseConfigInput struct {
-	Enabled     bool                      `binding:"required"`
-	Periodicity uint8                     `binding:"required"`
-	Endpoints   []LighthouseEndpointInput `binding:"required"`
+	Enabled     bool  `binding:"required"`
+	Periodicity uint8 `binding:"required"`
 }
 
 type LighthouseEndpointInput struct {
