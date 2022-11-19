@@ -12,7 +12,6 @@ import (
 )
 
 func TestCreateOrganization(t *testing.T) {
-
 	db.SetupModels(db.SQLite)
 	defer testlib.ResetDatabase()
 	app := app.NewApp(&config.Config{})

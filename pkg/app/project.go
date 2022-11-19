@@ -69,16 +69,22 @@ func (a App) UpdateLighthouseConfig(id string, input *models.UpdateLighthouseCon
 	}
 
 	lighthouseConfig := &models.LighthouseConfig{
+		ID:          project.LighthouseConfig.ID,
 		Enabled:     input.Enabled,
 		Periodicity: input.Periodicity,
 		ProjectID:   project.ID,
 	}
 
 	for _, endpoint := range input.Endpoints {
-		lighthouseConfig.Endpoints = append(lighthouseConfig.Endpoints, models.LighthouseEndpoint{
-			Header: endpoint.Header,
-			Url:    endpoint.Url,
-		})
+		lighthouseConfig.Endpoints = append(
+			lighthouseConfig.Endpoints,
+			models.LighthouseEndpoint{
+				ID:                 endpoint.ID,
+				LighthouseConfigID: lighthouseConfig.ID,
+				Url:                endpoint.Url,
+				Header:             endpoint.Header,
+			},
+		)
 	}
 
 	if len(input.Endpoints) > 0 {

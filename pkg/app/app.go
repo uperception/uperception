@@ -16,15 +16,16 @@ import (
 
 type App struct {
 	// userStore             sql.UserStore
-	config                *mConfig.Config
-	queue                 queue.Queue
-	storage               storage.Storage
-	lighthouseCollector   collectors.Collector
-	projectStore          db.ProjectStore
-	organizationStore     db.OrganizationStore
-	sessionsStore         db.SessionStore
-	lighthouseResultStore db.LighthouseResultStore
-	lighthouseConfigStore db.LighthouseConfigStore
+	config                   *mConfig.Config
+	queue                    queue.Queue
+	storage                  storage.Storage
+	lighthouseCollector      collectors.Collector
+	projectStore             db.ProjectStore
+	organizationStore        db.OrganizationStore
+	sessionsStore            db.SessionStore
+	lighthouseResultStore    db.LighthouseResultStore
+	lighthouseConfigStore    db.LighthouseConfigStore
+	lighthouseEndpointsStore db.LighthouseEndpointsStore
 }
 
 func NewApp(appConfig *mConfig.Config) *App {
@@ -41,13 +42,14 @@ func NewApp(appConfig *mConfig.Config) *App {
 	lighthouse := collectors.NewLighthouseCollector(storage, db.NewLighthouseResultStore())
 
 	return &App{
-		config:                appConfig,
-		queue:                 q,
-		lighthouseCollector:   lighthouse,
-		projectStore:          db.NewProjectStore(),
-		organizationStore:     db.NewOrganizationStore(),
-		sessionsStore:         db.NewSessionStore(),
-		lighthouseResultStore: db.NewLighthouseResultStore(),
-		lighthouseConfigStore: db.NewLighthouseConfigStore(),
+		config:                   appConfig,
+		queue:                    q,
+		lighthouseCollector:      lighthouse,
+		projectStore:             db.NewProjectStore(),
+		organizationStore:        db.NewOrganizationStore(),
+		sessionsStore:            db.NewSessionStore(),
+		lighthouseResultStore:    db.NewLighthouseResultStore(),
+		lighthouseConfigStore:    db.NewLighthouseConfigStore(),
+		lighthouseEndpointsStore: db.NewLighthouseEndpointsStore(),
 	}
 }

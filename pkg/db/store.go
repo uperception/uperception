@@ -35,6 +35,12 @@ type LighthouseConfigStore interface {
 	Delete(id string) error
 }
 
+type LighthouseEndpointsStore interface {
+	Save(config *models.LighthouseEndpoint) error
+	Update(config *models.LighthouseEndpoint) error
+	Delete(id string) error
+}
+
 type LighthouseResultStore interface {
 	Save(result *models.LighthouseResult) error
 	Delete(id string) error

@@ -17,7 +17,7 @@ func NewOrganizationStore() *SQLOrganizationStore {
 
 func (s SQLOrganizationStore) List() ([]*models.Organization, error) {
 	var organizations []*models.Organization
-	err := s.db.Find(&organizations).Error
+	err := s.db.Find(&organizations).Preload("LighthouseConfig").Error
 
 	return organizations, err
 }

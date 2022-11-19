@@ -13,22 +13,24 @@ const (
 )
 
 type LighthouseConfig struct {
-	ProjectID   uint `gorm:"primary_key"`
+	ID          uint `gorm:"primary_key"`
+	ProjectID   uint
 	Enabled     bool
 	Periodicity uint8
 	Endpoints   []LighthouseEndpoint
 }
 
 type LighthouseEndpoint struct {
-	Url                string `gorm:"primaryKey"`
-	LighthouseConfigID uint   `gorm:"primaryKey"`
+	ID                 uint   `gorm:"primary_key"`
+	LighthouseConfigID uint   `gorm:"index:,unique,composite:urlpathing"`
+	Url                string `gorm:"index:,unique,composite:urlpathing"`
 	Header             string
 }
 
 type LighthouseResult struct {
 	gorm.Model
-	ID                 uint `gorm:"primary_key"`
 	LighthouseConfigID uint
+	ID                 uint             `gorm:"primary_key"`
 	GatherMode         string           `json:"gatherMode"`
 	Environment        Environment      `json:"-"`
 	Audits             LighthouseAudits `json:"audits"`
