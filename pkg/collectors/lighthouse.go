@@ -2,7 +2,6 @@ package collectors
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"strconv"
@@ -46,7 +45,7 @@ func (r *LighthouseCollector) Collect(project *models.Project) error {
 			return err
 		}
 
-		file, err := ioutil.ReadFile(getTmpPath(i))
+		file, err := os.ReadFile(getTmpPath(i))
 		if err != nil {
 			return err
 		}

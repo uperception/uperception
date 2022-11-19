@@ -36,7 +36,7 @@ func (a *Api) CreateProject(c *gin.Context) {
 
 	project, err := a.App.CreateProject(input)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(getStatus(err), gin.H{"error": err.Error()})
 		return
 	}
 
@@ -54,7 +54,7 @@ func (a *Api) UpdateProject(c *gin.Context) {
 
 	project, err := a.App.UpdateProject(c.Param("id"), input)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(getStatus(err), gin.H{"error": err.Error()})
 		return
 	}
 
@@ -64,9 +64,8 @@ func (a *Api) UpdateProject(c *gin.Context) {
 // DELETE /projects/:id
 func (a *Api) DeleteProject(c *gin.Context) {
 	err := a.App.DeleteProject(c.Param("id"))
-
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(getStatus(err), gin.H{"error": err.Error()})
 		return
 	}
 
@@ -76,7 +75,6 @@ func (a *Api) DeleteProject(c *gin.Context) {
 // PUT /projects/:id/lighthouse
 func (a *Api) UpdateLighthouseConfig(c *gin.Context) {
 	var input models.UpdateLighthouseConfigInput
-
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

@@ -15,6 +15,7 @@ type Project struct {
 	Name             string `gorm:"index:idx_name,unique"`
 	Description      string
 	OrganizationID   uint
+	UserID           uint
 	LighthouseConfig LighthouseConfig
 	LighthouseState  LighthouseState
 	Sessions         []Session

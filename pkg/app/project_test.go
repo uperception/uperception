@@ -73,11 +73,10 @@ func TestUpdateProjectLighthouseConfig(t *testing.T) {
 		})
 
 	assert.NoError(t, err)
-	assert.Equal(t, uint(1), config.ID)
 
 	project, err = app.FindProject(projectID)
 	assert.NoError(t, err)
-	assert.Equal(t, config.ID, project.LighthouseConfig.ID)
+	assert.Equal(t, config.ProjectID, project.LighthouseConfig.ProjectID)
 	assert.Equal(t, 2, len(project.LighthouseConfig.Endpoints))
 
 	_, err = app.UpdateLighthouseConfig(
@@ -86,8 +85,8 @@ func TestUpdateProjectLighthouseConfig(t *testing.T) {
 			Enabled:     false,
 			Periodicity: 1,
 			Endpoints: []models.LighthouseEndpointInput{
-				{ID: 1, Url: "https://google.com"},
-				{ID: 2, Url: "https://facebook.com"},
+				{Url: "https://google.com"},
+				{Url: "https://facebook.com"},
 				{Url: "https://private.com", Header: "Basic 1234"},
 			},
 		})

@@ -17,9 +17,8 @@ func (a *Api) QueryOrganizations(c *gin.Context) {
 // GET /api/organizations/:id
 func (a *Api) FindOrganization(c *gin.Context) {
 	organization, err := a.App.FindOrganization(c.Param("id"))
-
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Record not found!"})
+		c.JSON(getStatus(err), gin.H{"error": "Record not found!"})
 		return
 	}
 
@@ -36,7 +35,7 @@ func (a *Api) CreateOrganization(c *gin.Context) {
 
 	organization, err := a.App.CreateOrganization(input)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(getStatus(err), gin.H{"error": err.Error()})
 		return
 	}
 
@@ -53,7 +52,7 @@ func (a *Api) UpdateOrganization(c *gin.Context) {
 
 	organization, err := a.App.UpdateOrganization(c.Param("id"), input)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(getStatus(err), gin.H{"error": err.Error()})
 		return
 	}
 

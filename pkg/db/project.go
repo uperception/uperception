@@ -3,6 +3,7 @@ package db
 import (
 	"github.com/leometzger/mmonitoring/pkg/models"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type SQLProjectStore struct {
@@ -26,10 +27,10 @@ func (s SQLProjectStore) List() ([]*models.Project, error) {
 // Finds the project with the specified ID
 func (s SQLProjectStore) FindById(id string) (*models.Project, error) {
 	var project models.Project
-	err := s.db.Preload("LighthouseConfig").Preload("LighthouseConfig.Endpoints").Where("id = ?", id).First(&project).Error
+	err := s.db.Preload(clause.Associations).Preload("LighthouseConfig.Endpoints").Where("id = ?", id).First(&project).Error
 
 	if err != nil {
-		return nil, err
+		return nil, models.ErrNotFound
 	}
 
 	return &project, err
@@ -51,7 +52,7 @@ func (s SQLProjectStore) FindByName(name string) (*models.Project, error) {
 func (s SQLProjectStore) Save(project *models.Project) error {
 	err := s.db.Omit("OrganizationID").Save(project).Error
 
-	return err
+	return GormErrorInterpreter(err)
 }
 
 // Updates the project with the specified ID

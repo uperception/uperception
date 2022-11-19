@@ -18,5 +18,6 @@ func getStatus(err error) int {
 	case models.ErrInvalidEntity:
 		return http.StatusBadRequest
 	}
-	return http.StatusBadRequest
+
+	return http.StatusInternalServerError
 }

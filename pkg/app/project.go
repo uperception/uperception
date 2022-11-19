@@ -10,9 +10,12 @@ func (a App) CreateProject(input models.CreateProjectInput) (*models.Project, er
 		Description: input.Description,
 	}
 
-	a.projectStore.Save(&project)
+	err := a.projectStore.Save(&project)
+	if err != nil {
+		return nil, err
+	}
 
-	return &project, nil
+	return &project, err
 }
 
 func (a App) UpdateProject(id string, input models.UpdateProjectInput) (*models.Project, error) {
@@ -66,7 +69,6 @@ func (a App) UpdateLighthouseConfig(id string, input *models.UpdateLighthouseCon
 	}
 
 	lighthouseConfig := &models.LighthouseConfig{
-		ID:          project.LighthouseConfig.ID,
 		Enabled:     input.Enabled,
 		Periodicity: input.Periodicity,
 		ProjectID:   project.ID,
@@ -74,13 +76,12 @@ func (a App) UpdateLighthouseConfig(id string, input *models.UpdateLighthouseCon
 
 	for _, endpoint := range input.Endpoints {
 		lighthouseConfig.Endpoints = append(lighthouseConfig.Endpoints, models.LighthouseEndpoint{
-			ID:     endpoint.ID,
 			Header: endpoint.Header,
 			Url:    endpoint.Url,
 		})
 	}
 
-	if project.LighthouseConfig.ID == 0 && len(input.Endpoints) > 0 {
+	if len(input.Endpoints) > 0 {
 		a.queue.Publish(project.ID)
 	}
 
