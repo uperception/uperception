@@ -5,7 +5,7 @@ import (
 
 	"github.com/leometzger/mmonitoring/pkg/api"
 	"github.com/leometzger/mmonitoring/pkg/config"
-	"github.com/leometzger/mmonitoring/pkg/sql"
+	"github.com/leometzger/mmonitoring/pkg/db"
 )
 
 func main() {
@@ -14,6 +14,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	sql.SetupModels(sql.Postgres)
+	db.SetupModels(db.Postgres)
 	api.NewApi(config).Run()
 }

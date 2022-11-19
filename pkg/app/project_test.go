@@ -6,14 +6,14 @@ import (
 
 	"github.com/leometzger/mmonitoring/pkg/app"
 	"github.com/leometzger/mmonitoring/pkg/config"
+	"github.com/leometzger/mmonitoring/pkg/db"
 	"github.com/leometzger/mmonitoring/pkg/models"
-	"github.com/leometzger/mmonitoring/pkg/sql"
 	"github.com/leometzger/mmonitoring/testlib"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestProjectBasicOperations(t *testing.T) {
-	sql.SetupModels(sql.SQLite)
+	db.SetupModels(db.SQLite)
 	defer testlib.ResetDatabase()
 	app := app.NewApp(&config.Config{})
 
@@ -50,7 +50,7 @@ func TestProjectBasicOperations(t *testing.T) {
 }
 
 func TestUpdateProjectLighthouseConfig(t *testing.T) {
-	sql.SetupModels(sql.SQLite)
+	db.SetupModels(db.SQLite)
 	defer testlib.ResetDatabase()
 	app := app.NewApp(&config.Config{})
 

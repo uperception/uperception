@@ -9,8 +9,8 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/sqs"
 	"github.com/leometzger/mmonitoring/pkg/collectors"
 	mConfig "github.com/leometzger/mmonitoring/pkg/config"
+	"github.com/leometzger/mmonitoring/pkg/db"
 	"github.com/leometzger/mmonitoring/pkg/queue"
-	"github.com/leometzger/mmonitoring/pkg/sql"
 	"github.com/leometzger/mmonitoring/pkg/storage"
 )
 
@@ -20,11 +20,11 @@ type App struct {
 	queue                 queue.Queue
 	storage               storage.Storage
 	lighthouseCollector   collectors.Collector
-	projectStore          sql.ProjectStore
-	organizationStore     sql.OrganizationStore
-	sessionsStore         sql.SessionStore
-	lighthouseResultStore sql.LighthouseResultStore
-	lighthouseConfigStore sql.LighthouseConfigStore
+	projectStore          db.ProjectStore
+	organizationStore     db.OrganizationStore
+	sessionsStore         db.SessionStore
+	lighthouseResultStore db.LighthouseResultStore
+	lighthouseConfigStore db.LighthouseConfigStore
 }
 
 func NewApp(appConfig *mConfig.Config) *App {
@@ -38,16 +38,16 @@ func NewApp(appConfig *mConfig.Config) *App {
 
 	s3Client := s3.NewFromConfig(cfg)
 	storage := storage.NewAwsStorage(s3Client, appConfig.Bucket)
-	lighthouse := collectors.NewLighthouseCollector(storage, sql.NewLighthouseResultStore())
+	lighthouse := collectors.NewLighthouseCollector(storage, db.NewLighthouseResultStore())
 
 	return &App{
 		config:                appConfig,
 		queue:                 q,
 		lighthouseCollector:   lighthouse,
-		projectStore:          sql.NewProjectStore(),
-		organizationStore:     sql.NewOrganizationStore(),
-		sessionsStore:         sql.NewSessionStore(),
-		lighthouseResultStore: sql.NewLighthouseResultStore(),
-		lighthouseConfigStore: sql.NewLighthouseConfigStore(),
+		projectStore:          db.NewProjectStore(),
+		organizationStore:     db.NewOrganizationStore(),
+		sessionsStore:         db.NewSessionStore(),
+		lighthouseResultStore: db.NewLighthouseResultStore(),
+		lighthouseConfigStore: db.NewLighthouseConfigStore(),
 	}
 }

@@ -1,17 +1,22 @@
 package testlib
 
 import (
+	"github.com/leometzger/mmonitoring/pkg/app"
+	"github.com/leometzger/mmonitoring/pkg/db"
 	"github.com/leometzger/mmonitoring/pkg/models"
-	"github.com/leometzger/mmonitoring/pkg/sql"
 )
 
 func ResetDatabase() {
-	sql.Instance.Delete(&models.Organization{})
-	sql.Instance.Delete(&models.User{})
-	sql.Instance.Delete(&models.Session{})
-	sql.Instance.Delete(&models.Project{})
-	sql.Instance.Delete(&models.LighthouseConfig{})
-	sql.Instance.Delete(&models.LighthouseResult{})
-	sql.Instance.Delete(&models.LighthouseMetric{})
-	sql.Instance.Delete(&models.LighthouseEndpoint{})
+	db.Instance.Delete(&models.Organization{})
+	db.Instance.Delete(&models.User{})
+	db.Instance.Delete(&models.Session{})
+	db.Instance.Delete(&models.Project{})
+	db.Instance.Delete(&models.LighthouseConfig{})
+	db.Instance.Delete(&models.LighthouseResult{})
+	db.Instance.Delete(&models.LighthouseMetric{})
+	db.Instance.Delete(&models.LighthouseEndpoint{})
+}
+
+func CreateApp() *app.App {
+	return nil
 }

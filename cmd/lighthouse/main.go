@@ -5,7 +5,7 @@ import (
 
 	"github.com/leometzger/mmonitoring/pkg/app"
 	"github.com/leometzger/mmonitoring/pkg/config"
-	"github.com/leometzger/mmonitoring/pkg/sql"
+	"github.com/leometzger/mmonitoring/pkg/db"
 )
 
 // Runs in a container environment that has
@@ -17,7 +17,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	sql.SetupModels(sql.Postgres)
+	db.SetupModels(db.Postgres)
 	app := app.NewApp(config)
 	app.CollectLighthouseData()
 }

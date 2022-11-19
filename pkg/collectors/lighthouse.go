@@ -7,17 +7,17 @@ import (
 	"os/exec"
 	"strconv"
 
+	"github.com/leometzger/mmonitoring/pkg/db"
 	"github.com/leometzger/mmonitoring/pkg/models"
-	"github.com/leometzger/mmonitoring/pkg/sql"
 	"github.com/leometzger/mmonitoring/pkg/storage"
 )
 
 type LighthouseCollector struct {
 	storage storage.Storage
-	store   sql.LighthouseResultStore
+	store   db.LighthouseResultStore
 }
 
-func NewLighthouseCollector(storage storage.Storage, store sql.LighthouseResultStore) *LighthouseCollector {
+func NewLighthouseCollector(storage storage.Storage, store db.LighthouseResultStore) *LighthouseCollector {
 	return &LighthouseCollector{
 		storage: storage,
 		store:   store,

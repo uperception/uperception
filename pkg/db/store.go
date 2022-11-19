@@ -1,4 +1,4 @@
-package sql
+package db
 
 import "github.com/leometzger/mmonitoring/pkg/models"
 
