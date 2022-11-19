@@ -25,3 +25,9 @@ docker-build-collector:
 .PHONY: test
 test:
 	go test -v ./...
+
+.PHONY: create-env
+create-env:
+	./scripts/create-sample-env.sh
+
+
