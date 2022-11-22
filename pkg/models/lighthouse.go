@@ -5,11 +5,18 @@ import (
 )
 
 type Environment uint8
+type LighthouseState uint8
 
 const (
 	Mobile Environment = iota
 	Desktop
 	Tablet
+)
+
+const (
+	Created LighthouseState = iota
+	Scheduled
+	Running
 )
 
 type LighthouseConfig struct {
@@ -25,6 +32,7 @@ type LighthouseEndpoint struct {
 	LighthouseConfigID uint   `gorm:"index:,unique,composite:urlpathing"`
 	Url                string `gorm:"index:,unique,composite:urlpathing"`
 	Header             string
+	LighthouseState    LighthouseState
 }
 
 type LighthouseResult struct {

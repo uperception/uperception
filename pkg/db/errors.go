@@ -10,7 +10,7 @@ import (
 
 // Gorm oriented error interpreter.
 // It interpret gorm errors and pgerrors
-func GormErrorInterpreter(err error) error {
+func gormErrorInterpreter(err error) error {
 	if err == nil {
 		return err
 	}

@@ -4,49 +4,51 @@ import "github.com/leometzger/mmonitoring/pkg/models"
 
 type ProjectStore interface {
 	List() ([]*models.Project, error)
-	FindById(id string) (*models.Project, error)
-	Save(project *models.Project) error
-	Update(project *models.Project) error
-	Delete(id string) error
+	FindById(string) (*models.Project, error)
+	Save(*models.Project) error
+	Update(*models.Project) error
+	Delete(string) error
 }
 
 type OrganizationStore interface {
 	List() ([]*models.Organization, error)
-	FindById(id string) (*models.Organization, error)
-	Save(organization *models.Organization) error
-	Delete(id string) error
+	FindById(string) (*models.Organization, error)
+	Save(*models.Organization) error
+	Delete(string) error
 }
 
 type SessionStore interface {
-	Save(project *models.Session) error
-	Update(project *models.Session) error
-	Delete(id string) error
+	Save(*models.Session) error
+	Update(*models.Session) error
+	Delete(string) error
 }
 
 type UserStore interface {
-	Save(project *models.User) error
-	Update(project *models.User) error
-	Delete(id string) error
+	Save(*models.User) error
+	Update(*models.User) error
+	Delete(string) error
 }
 
 type LighthouseConfigStore interface {
-	Save(config *models.LighthouseConfig) error
-	Update(config *models.LighthouseConfig) error
-	Delete(id string) error
+	Save(*models.LighthouseConfig) error
+	Update(*models.LighthouseConfig) error
+	Delete(string) error
 }
 
 type LighthouseEndpointsStore interface {
-	Save(config *models.LighthouseEndpoint) error
-	Update(config *models.LighthouseEndpoint) error
-	Delete(id string) error
+	List(uint) ([]*models.LighthouseEndpoint, error)
+	FindById(string) (*models.LighthouseEndpoint, error)
+	Save(*models.LighthouseEndpoint) error
+	Update(*models.LighthouseEndpoint) error
+	Delete(string) error
 }
 
 type LighthouseResultStore interface {
-	Save(result *models.LighthouseResult) error
-	Delete(id string) error
+	Save(*models.LighthouseResult) error
+	Delete(string) error
 }
 
 type SessionStorage interface {
-	GenerateLink(key string) (string, error)
-	GetFile(key string) ([]byte, error)
+	GenerateLink(string) (string, error)
+	GetFile(string) ([]byte, error)
 }

@@ -52,7 +52,7 @@ func (s SQLProjectStore) FindByName(name string) (*models.Project, error) {
 func (s SQLProjectStore) Save(project *models.Project) error {
 	err := s.db.Omit("OrganizationID").Save(project).Error
 
-	return GormErrorInterpreter(err)
+	return gormErrorInterpreter(err)
 }
 
 // Updates the project with the specified ID

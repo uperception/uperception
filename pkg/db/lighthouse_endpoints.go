@@ -15,18 +15,34 @@ func NewLighthouseEndpointsStore() *SQLLighthouseEndpointsStore {
 	}
 }
 
+func (s SQLLighthouseEndpointsStore) List(lighthouseConfigID uint) ([]*models.LighthouseEndpoint, error) {
+	var endpoints []*models.LighthouseEndpoint
+	err := s.db.Find(&endpoints).Where("LighthouseConfigID = ?", lighthouseConfigID).Error
+
+	return endpoints, gormErrorInterpreter(err)
+}
+
+func (s SQLLighthouseEndpointsStore) FindById(id string) (*models.LighthouseEndpoint, error) {
+	var endpoint *models.LighthouseEndpoint
+	err := s.db.Where("id = ?", id).First(&endpoint).Error
+
+	return endpoint, gormErrorInterpreter(err)
+}
+
 func (s SQLLighthouseEndpointsStore) Save(endpoint *models.LighthouseEndpoint) error {
 	err := s.db.Save(endpoint).Error
 
-	return GormErrorInterpreter(err)
+	return gormErrorInterpreter(err)
 }
 
 func (s SQLLighthouseEndpointsStore) Update(endpoint *models.LighthouseEndpoint) error {
 	err := s.db.Save(endpoint).Error
 
-	return GormErrorInterpreter(err)
+	return gormErrorInterpreter(err)
 }
 
 func (s SQLLighthouseEndpointsStore) Delete(id string) error {
-	return s.db.Delete(models.LighthouseEndpoint{}, id).Error
+	err := s.db.Delete(models.LighthouseEndpoint{}, id).Error
+
+	return gormErrorInterpreter(err)
 }

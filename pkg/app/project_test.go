@@ -22,30 +22,29 @@ func TestProjectBasicOperations(t *testing.T) {
 		Name:        "Testing Project",
 		Description: "Testing Description",
 	})
+	projectID := strconv.FormatUint(uint64(project.ID), 10)
 
 	assert.NoError(t, err)
-	assert.Equal(t, uint(1), project.ID)
 
 	// Find
-	project, err = app.FindProject("1")
+	project, err = app.FindProject(projectID)
 	assert.NoError(t, err)
 	assert.Equal(t, project.Name, "Testing Project")
 
 	// Update
-	project, err = app.UpdateProject("1", models.UpdateProjectInput{
+	project, err = app.UpdateProject(projectID, models.UpdateProjectInput{
 		Name:        "Testing Project v2",
 		Description: "Testing Description v2",
 	})
 
 	assert.NoError(t, err)
-	assert.Equal(t, uint(1), project.ID)
 	assert.Equal(t, project.Name, "Testing Project v2")
 
 	// Delete
-	err = app.DeleteProject("1")
+	err = app.DeleteProject(projectID)
 	assert.NoError(t, err)
 
-	_, err = app.FindProject("1")
+	_, err = app.FindProject(projectID)
 	assert.Error(t, err)
 }
 

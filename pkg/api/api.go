@@ -42,7 +42,15 @@ func NewApi(config *config.Config) *Api {
 		v1.POST("/projects", a.CreateProject)
 		v1.PUT("/projects/:id", a.UpdateProject)
 		v1.DELETE("/projects/:id", a.DeleteProject)
+
+		// Lighthouse
 		v1.PUT("/projects/:id/lighthouse", a.UpdateLighthouseConfig)
+
+		v1.GET("/projects/:id/lighthouse/endpoints", a.ListLighthouseEndpoints)
+		v1.POST("/projects/:id/lighthouse/endpoints", a.CreateLighthouseEndpoint)
+		v1.POST("/projects/:id/lighthouse/endpoints/batch", a.CreateLighthouseEndpointsBatch)
+		v1.PUT("/projects/:id/lighthouse/endpoints/:endpointID", a.UpdateLighthouseEndpoint)
+		v1.DELETE("/projects/:id/lighthouse/endpoints/:endpointID", a.DeleteLighthouseEndpoint)
 
 		// Sessions
 		// v1.GET("/projects/:id/sessions", a.QuerySessions)

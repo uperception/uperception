@@ -18,13 +18,13 @@ func NewLighthouseConfigStore() *SQLLighthouseConfigStore {
 func (s SQLLighthouseConfigStore) Save(config *models.LighthouseConfig) error {
 	err := s.db.Save(config).Error
 
-	return GormErrorInterpreter(err)
+	return gormErrorInterpreter(err)
 }
 
 func (s SQLLighthouseConfigStore) Update(config *models.LighthouseConfig) error {
 	err := s.db.Save(config).Error
 
-	return GormErrorInterpreter(err)
+	return gormErrorInterpreter(err)
 }
 
 func (s SQLLighthouseConfigStore) Delete(id string) error {
