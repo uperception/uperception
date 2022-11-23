@@ -8,6 +8,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/leometzger/mmonitoring/pkg/api/middleware"
 	"github.com/leometzger/mmonitoring/pkg/app"
 	"github.com/leometzger/mmonitoring/pkg/config"
 )
@@ -37,7 +38,7 @@ func NewApi(config *config.Config) *Api {
 	v1 := router.Group("/v1")
 	{
 		// Projects
-		v1.GET("/projects", a.QueryProjects)
+		v1.GET("/projects", middleware.IsAuthorized("test"), a.QueryProjects)
 		v1.GET("/projects/:id", a.GetProject)
 		v1.POST("/projects", a.CreateProject)
 		v1.PUT("/projects/:id", a.UpdateProject)
