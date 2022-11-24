@@ -1,6 +1,8 @@
 package collectors
 
 import (
+	"crypto/sha1"
+	"encoding/hex"
 	"encoding/json"
 	"os"
 	"os/exec"
@@ -23,53 +25,57 @@ func NewLighthouseCollector(storage storage.Storage, store db.LighthouseResultSt
 	}
 }
 
-// Collects lighthouse data
-func (r *LighthouseCollector) Collect(project *models.Project) error {
-	for i, endpoint := range project.LighthouseConfig.Endpoints {
-		err := exec.Command(
-			"lighthouse",
-			endpoint.Url,
-			"--chrome-flags='--headless'",
-			"--output-path="+getTmpPath(i),
-			"--output=json",
-		).Run()
+// Collects lighthouse data using lighthouse CLI and the configured
+// parameters for the endpoint
+func (r *LighthouseCollector) Collect(endpoint *models.LighthouseEndpoint) error {
+	err := exec.Command(
+		"lighthouse",
+		endpoint.Url,
+		"--chrome-flags='--headless'",
+		"--output-path="+getTmpPath(endpoint),
+		"--output=json",
+	).Run()
 
-		if err != nil {
-			return err
-		}
+	if err != nil {
+		return err
 	}
 
-	for i, endpoint := range project.LighthouseConfig.Endpoints {
-		resultFile, err := os.Open(getTmpPath(i))
-		if err != nil {
-			return err
-		}
+	resultFile, err := os.Open(getTmpPath(endpoint))
+	if err != nil {
+		return err
+	}
 
-		file, err := os.ReadFile(getTmpPath(i))
-		if err != nil {
-			return err
-		}
+	file, err := os.ReadFile(getTmpPath(endpoint))
+	if err != nil {
+		return err
+	}
 
-		var result models.LighthouseResult
-		err = json.Unmarshal([]byte(file), &result)
-		if err != nil {
-			return err
-		}
+	var result models.LighthouseResult
+	err = json.Unmarshal([]byte(file), &result)
+	if err != nil {
+		return err
+	}
 
-		err = r.store.Save(&result)
-		if err != nil {
-			return err
-		}
+	err = r.store.Save(&result)
+	if err != nil {
+		return err
+	}
 
-		err = r.storage.SaveLighthouseResult(endpoint.Url, resultFile)
-		if err != nil {
-			return err
-		}
+	err = r.storage.SaveLighthouseResult(endpoint.Url, resultFile)
+	if err != nil {
+		return err
 	}
 
 	return nil
 }
 
-func getTmpPath(index int) string {
-	return "mmonitoring-" + strconv.FormatInt(int64(index), 10) + ".json"
+// Generates a temporary path to store the JSON result
+func getTmpPath(endpoint *models.LighthouseEndpoint) string {
+	hasher := sha1.New()
+	hasher.Write([]byte(endpoint.Url))
+	hasher.Write([]byte(strconv.FormatUint(uint64(endpoint.ID), 10)))
+
+	id := hex.EncodeToString(hasher.Sum(nil))
+
+	return id + ".json"
 }

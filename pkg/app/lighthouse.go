@@ -1,18 +1,8 @@
 package app
 
 import (
-	"strconv"
-
 	"github.com/leometzger/mmonitoring/pkg/models"
 )
-
-func (a App) EnqueueLighthouseTask(project *models.Project) error {
-	return a.queue.Publish(project.ID)
-}
-
-func (a App) EnqueueAllLighthouseTasks() error {
-	return nil
-}
 
 func (a App) CollectLighthouseData() error {
 	task, err := a.queue.GetTask()
@@ -24,12 +14,13 @@ func (a App) CollectLighthouseData() error {
 		return nil
 	}
 
-	project, err := a.projectStore.FindById(strconv.FormatUint(uint64(task.ProjectID), 10))
+	endpointID := task.Body
+	endpoint, err := a.lighthouseEndpointsStore.FindById(endpointID)
 	if err != nil {
 		return err
 	}
 
-	err = a.lighthouseCollector.Collect(project)
+	err = a.lighthouseCollector.Collect(endpoint)
 	if err != nil {
 		return err
 	}

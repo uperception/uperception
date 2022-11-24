@@ -2,8 +2,6 @@ package queue
 
 import (
 	"context"
-	"log"
-	"strconv"
 
 	"github.com/aws/aws-sdk-go-v2/service/sqs"
 )
@@ -37,23 +35,22 @@ func (q *AwsQueue) GetTask() (*Task, error) {
 	}
 
 	messageId := *output.Messages[0].MessageId
-	projectID, err := strconv.ParseUint(*output.Messages[0].Body, 10, 32)
-	if err != nil {
-		log.Fatal("error parsing project ID", err)
-	}
+	messageBody := *output.Messages[0].Body
 
-	return NewTask(messageId, uint(projectID)), nil
+	return NewTask(messageId, messageBody), nil
 }
 
-func (q *AwsQueue) Publish(id uint) error {
-	projectID := strconv.FormatUint(uint64(id), 10)
-
-	_, err := q.client.SendMessage(context.TODO(), &sqs.SendMessageInput{
+func (q *AwsQueue) Publish(body *string) (*Task, error) {
+	output, err := q.client.SendMessage(context.TODO(), &sqs.SendMessageInput{
 		QueueUrl:    &q.queueUrl,
-		MessageBody: &projectID,
+		MessageBody: body,
 	})
 
-	return err
+	if err != nil {
+		return nil, err
+	}
+
+	return NewTask(*output.MessageId, *body), nil
 }
 
 func (q *AwsQueue) FinishTask(id string) error {
