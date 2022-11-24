@@ -39,6 +39,7 @@ type LighthouseEndpointsStore interface {
 	List(uint) ([]*models.LighthouseEndpoint, error)
 	FindById(string) (*models.LighthouseEndpoint, error)
 	Save(*models.LighthouseEndpoint) error
+	SaveBatch([]*models.LighthouseEndpoint) error
 	Update(*models.LighthouseEndpoint) error
 	Delete(string) error
 }

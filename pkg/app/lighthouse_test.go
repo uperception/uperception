@@ -1,6 +1,7 @@
 package app_test
 
 import (
+	"strconv"
 	"testing"
 
 	"github.com/leometzger/mmonitoring/pkg/app"
@@ -59,4 +60,37 @@ func TestLighthouseEndpointsBasicOperations(t *testing.T) {
 	assert.Error(t, err)
 }
 
-func TestLighthouseBatchInsert(t *testing.T) {}
+func TestLighthouseBatchInsert(t *testing.T) {
+	db.SetupModels(db.SQLite)
+	defer testlib.ResetDatabase()
+	app := app.NewApp(&config.Config{})
+
+	project, err := app.CreateProject(models.CreateProjectInput{
+		Name:        "TestLighthouseBatchInsert",
+		Description: "TestLighthouseBatchInsert Description",
+	})
+	assert.NoError(t, err)
+	projectID := strconv.FormatUint(uint64(project.ID), 10)
+
+	// Create
+	endpoints, err := app.CreateLighthouseEndpoints(projectID, []models.LighthouseEndpointInput{
+		{
+			Url:    "https://google.com",
+			Header: "",
+		},
+		{
+			Url:    "https://metzger.fot.br",
+			Header: "Basic dsdsd",
+		},
+	})
+	assert.NoError(t, err)
+	assert.Equal(t, 2, len(endpoints))
+
+	endpoints, err = app.ListLighthouseEndpoints(projectID)
+	assert.NoError(t, err)
+
+	for _, endpoint := range endpoints {
+		assert.NotEmpty(t, endpoint.ID)
+		assert.NotEmpty(t, endpoint.Url)
+	}
+}

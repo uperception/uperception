@@ -35,6 +35,12 @@ func (s SQLLighthouseEndpointsStore) Save(endpoint *models.LighthouseEndpoint) e
 	return gormErrorInterpreter(err)
 }
 
+func (s SQLLighthouseEndpointsStore) SaveBatch(endpoints []*models.LighthouseEndpoint) error {
+	err := s.db.CreateInBatches(endpoints, 100).Error
+
+	return gormErrorInterpreter(err)
+}
+
 func (s SQLLighthouseEndpointsStore) Update(endpoint *models.LighthouseEndpoint) error {
 	err := s.db.Save(endpoint).Error
 

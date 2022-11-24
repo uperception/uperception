@@ -69,11 +69,38 @@ func (a App) CreateLighthouseEndpoint(projectId string, input models.LighthouseE
 		return nil, err
 	}
 
+	// body := strconv.FormatUint(uint64(endpont.ID), 10)
+	// _, err = a.queue.Publish(&body)
+	// if err != nil {
+	// 	fmt.Println(err.Error()) // TODO: Log this better
+	// }
+
 	return endpont, nil
 }
 
-func (a App) CreateLighthouseEndpoints(endpoint []models.LighthouseEndpointInput) ([]*models.LighthouseEndpoint, error) {
-	return nil, nil
+func (a App) CreateLighthouseEndpoints(projectID string, input []models.LighthouseEndpointInput) ([]*models.LighthouseEndpoint, error) {
+	var endpoints []*models.LighthouseEndpoint
+
+	project, err := a.projectStore.FindById(projectID)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, in := range input {
+		endpoints = append(endpoints, &models.LighthouseEndpoint{
+			Url:                in.Url,
+			Header:             in.Header,
+			LighthouseConfigID: project.LighthouseConfig.ID,
+			LighthouseState:    models.Created,
+		})
+	}
+
+	err = a.lighthouseEndpointsStore.SaveBatch(endpoints)
+	if err != nil {
+		return nil, err
+	}
+
+	return endpoints, nil
 }
 
 func (a App) UpdateLighthouseEndpoint(id string, input models.LighthouseEndpointInput) (*models.LighthouseEndpoint, error) {
