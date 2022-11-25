@@ -16,9 +16,13 @@ func NewLighthouseResultStore() *SQLLighthouseResultStore {
 }
 
 func (s SQLLighthouseResultStore) Save(result *models.LighthouseResult) error {
-	return s.db.Save(result).Error
+	err := s.db.Save(result).Error
+
+	return gormErrorInterpreter(err)
 }
 
 func (s SQLLighthouseResultStore) Delete(id string) error {
-	return s.db.Delete(models.LighthouseResult{}, id).Error
+	err := s.db.Delete(models.LighthouseResult{}, id).Error
+
+	return gormErrorInterpreter(err)
 }
