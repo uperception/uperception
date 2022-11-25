@@ -15,13 +15,14 @@ const (
 
 const (
 	Created LighthouseState = iota
-	Scheduled
+	Queued
 	Running
+	None
 )
 
 type LighthouseConfig struct {
 	ID          uint `gorm:"primary_key"`
-	ProjectID   uint
+	ProjectID   uint `json:"-"`
 	Enabled     bool
 	Periodicity uint8
 	Endpoints   []LighthouseEndpoint
@@ -29,7 +30,7 @@ type LighthouseConfig struct {
 
 type LighthouseEndpoint struct {
 	ID                 uint   `gorm:"primary_key"`
-	LighthouseConfigID uint   `gorm:"index:,unique,composite:urlpathing"`
+	LighthouseConfigID uint   `gorm:"index:,unique,composite:urlpathing" json:"-"`
 	Url                string `gorm:"index:,unique,composite:urlpathing"`
 	Header             string
 	LighthouseState    LighthouseState
@@ -37,7 +38,7 @@ type LighthouseEndpoint struct {
 
 type LighthouseResult struct {
 	gorm.Model
-	LighthouseConfigID uint
+	LighthouseConfigID uint             `json:"-"`
 	ID                 uint             `gorm:"primary_key"`
 	GatherMode         string           `json:"gatherMode"`
 	Environment        Environment      `json:"-"`

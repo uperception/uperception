@@ -36,6 +36,8 @@ func IsAuthorized(role string) gin.HandlerFunc {
 		}
 
 		rawAccessToken := accessTokenHeader[0]
+		c.Set("token", rawAccessToken)
+
 		tr := &http.Transport{
 			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 		}
@@ -58,6 +60,11 @@ func IsAuthorized(role string) gin.HandlerFunc {
 
 		if err != nil {
 			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+
+		if role == "" {
+			c.Next()
 			return
 		}
 

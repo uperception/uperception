@@ -4,11 +4,12 @@ import (
 	"context"
 	"log"
 
+	"github.com/Nerzal/gocloak/v12"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/sqs"
 	"github.com/leometzger/mmonitoring/pkg/collectors"
-	mConfig "github.com/leometzger/mmonitoring/pkg/config"
+	appConfig "github.com/leometzger/mmonitoring/pkg/config"
 	"github.com/leometzger/mmonitoring/pkg/db"
 	"github.com/leometzger/mmonitoring/pkg/queue"
 	"github.com/leometzger/mmonitoring/pkg/storage"
@@ -16,7 +17,8 @@ import (
 
 type App struct {
 	// userStore             sql.UserStore
-	config                   *mConfig.Config
+	config                   *appConfig.Config
+	keycloakClient           *gocloak.GoCloak
 	queue                    queue.Queue
 	storage                  storage.Storage
 	lighthouseCollector      collectors.Collector
@@ -28,7 +30,7 @@ type App struct {
 	lighthouseEndpointsStore db.LighthouseEndpointsStore
 }
 
-func NewApp(appConfig *mConfig.Config) *App {
+func NewApp(appConfig *appConfig.Config) *App {
 	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion(appConfig.Region))
 	if err != nil {
 		log.Fatal(err)
@@ -41,10 +43,13 @@ func NewApp(appConfig *mConfig.Config) *App {
 	storage := storage.NewAwsStorage(s3Client, appConfig.Bucket)
 	lighthouse := collectors.NewLighthouseCollector(storage, db.NewLighthouseResultStore())
 
+	client := gocloak.NewClient(appConfig.KeycloakUrl)
+
 	return &App{
 		config:                   appConfig,
 		queue:                    q,
 		lighthouseCollector:      lighthouse,
+		keycloakClient:           client,
 		projectStore:             db.NewProjectStore(),
 		organizationStore:        db.NewOrganizationStore(),
 		sessionsStore:            db.NewSessionStore(),
