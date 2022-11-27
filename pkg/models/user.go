@@ -9,10 +9,10 @@ type User struct {
 }
 
 type UserInfo struct {
+	Avatar   string
 	Email    string
 	Name     string
 	LastName string
-	// Add props
 }
 
 type UpdateProfileInput struct {

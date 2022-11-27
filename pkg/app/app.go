@@ -19,6 +19,7 @@ type App struct {
 	// userStore             sql.UserStore
 	config                   *appConfig.Config
 	keycloakClient           *gocloak.GoCloak
+	keycloakAdminToken       *gocloak.JWT
 	queue                    queue.Queue
 	storage                  storage.Storage
 	lighthouseCollector      collectors.Collector
@@ -50,6 +51,7 @@ func NewApp(appConfig *appConfig.Config) *App {
 		queue:                    q,
 		lighthouseCollector:      lighthouse,
 		keycloakClient:           client,
+		storage:                  storage,
 		projectStore:             db.NewProjectStore(),
 		organizationStore:        db.NewOrganizationStore(),
 		sessionsStore:            db.NewSessionStore(),
@@ -57,4 +59,13 @@ func NewApp(appConfig *appConfig.Config) *App {
 		lighthouseConfigStore:    db.NewLighthouseConfigStore(),
 		lighthouseEndpointsStore: db.NewLighthouseEndpointsStore(),
 	}
+}
+
+func (a *App) refreshKeycloakToken() {
+	ctx := context.Background()
+	token, err := a.keycloakClient.LoginClient(ctx, a.config.KeycloakClient, a.config.KeycloakSecret, a.config.KeycloakRealm)
+	if err != nil {
+		return
+	}
+	a.keycloakAdminToken = token
 }

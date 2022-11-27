@@ -36,7 +36,19 @@ func (s *AwsStorage) SaveLighthouseResult(url string, content io.Reader) error {
 	return err
 }
 
-func (s *AwsStorage) AddAvatar()              {}
-func (s *AwsStorage) RemoveAvatar()           {}
-func (s *AwsStorage) AddOrganizationLogo()    {}
-func (s *AwsStorage) RemoveOrganizationLogo() {}
+func (s *AwsStorage) AddAvatar(key string, avatar io.Reader) error {
+	_, err := s.client.PutObject(context.Background(), &s3.PutObjectInput{
+		Bucket: &s.bucket,
+		Key:    &key,
+		Body:   avatar,
+	})
+	return err
+}
+
+func (s *AwsStorage) GetAvatarUrl(key string) (string, error) {
+	return "", nil
+}
+
+func (s *AwsStorage) RemoveAvatar(key string) error {
+	return nil
+}

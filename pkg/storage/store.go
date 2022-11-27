@@ -5,9 +5,8 @@ import (
 )
 
 type Storage interface {
-	AddAvatar()
-	RemoveAvatar()
-	AddOrganizationLogo()
-	RemoveOrganizationLogo()
+	AddAvatar(key string, avatar io.Reader) error
+	GetAvatarUrl(key string) (string, error)
+	RemoveAvatar(key string) error
 	SaveLighthouseResult(domain string, content io.Reader) error
 }

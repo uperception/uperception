@@ -1,9 +1,11 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/leometzger/mmonitoring/pkg/models"
 )
 
 // GET /profile
@@ -19,11 +21,40 @@ func (a *Api) GetProfile(c *gin.Context) {
 
 // PUT /profile
 func (a *Api) UpdateProfile(c *gin.Context) {
-	user, err := a.App.GetUserInfo(c.GetString("token"))
+	var input models.UpdateProfileInput
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	user, err := a.App.UpdateProfile(c.GetString("token"), input)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": user})
+}
+
+// POST /profile/avatar
+func (a *Api) AddAvatar(c *gin.Context) {
+	file, err := c.FormFile("file")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{})
+		return
+	}
+
+	avatarFile, err := file.Open()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{})
+		return
+	}
+
+	err = a.App.SaveAvatar(c.GetString("token"), avatarFile)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{})
+		return
+	}
+
+	c.String(http.StatusOK, fmt.Sprintf("'%s' uploaded!", file.Filename))
 }

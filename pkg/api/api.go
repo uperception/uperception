@@ -59,6 +59,8 @@ func NewApi(config *config.Config) *Api {
 
 		// User
 		v1.GET("/profile", middleware.IsAuthorized(""), a.GetProfile)
+		v1.PUT("/profile", middleware.IsAuthorized(""), a.UpdateProfile)
+		v1.POST("/profile/avatar", middleware.IsAuthorized(""), a.AddAvatar)
 		// v1.PUT("/profile", a.UpdateProfile)
 
 		// Organizations
