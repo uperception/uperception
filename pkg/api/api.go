@@ -58,7 +58,7 @@ func NewApi(config *config.Config) *Api {
 		// v1.GET("/projects/:id/sessions/:id", a.QuerySessions)
 
 		// User
-		// v1.GET("/profile", a.GetProfile)
+		v1.GET("/profile", middleware.IsAuthorized(""), a.GetProfile)
 		// v1.PUT("/profile", a.UpdateProfile)
 
 		// Organizations
