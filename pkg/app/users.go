@@ -5,27 +5,44 @@ import (
 	"io"
 
 	"github.com/leometzger/mmonitoring/pkg/models"
+	"github.com/leometzger/mmonitoring/pkg/storage"
 )
 
-func (a App) GetAvatarURL(accessToken string) (string, error) {
-	ctx := context.Background()
-	user, err := a.keycloakClient.GetUserInfo(ctx, accessToken, a.config.KeycloakRealm)
-	if err != nil {
-		return "", err
-	}
-	url, err := a.storage.GetAvatarUrl(*user.Sub)
+func (a App) GetAvatarURL(user *models.User) (*storage.SignedUrl, error) {
+	url, err := a.storage.GetAvatarUrl(user.Avatar)
 
 	return url, err
 }
 
-func (a App) SaveAvatar(accessToken string, avatarFile io.Reader) error {
+func (a App) SaveAvatar(accessToken string, avatarFile io.Reader, ext string) error {
 	ctx := context.Background()
 	user, err := a.keycloakClient.GetUserInfo(ctx, accessToken, a.config.KeycloakRealm)
 	if err != nil {
 		return err
 	}
 
-	err = a.storage.AddAvatar(*user.Sub, avatarFile)
+	path, err := a.storage.AddAvatar(*user.Sub, avatarFile, ext)
+	if err != nil {
+		return err
+	}
+
+	dbUser, err := a.userStore.FindByKeycloakId(*user.Sub)
+	if err != nil {
+		if err != models.ErrNotFound {
+			return err
+		}
+		dbUser = &models.User{
+			KeycloakID: *user.Sub,
+			Avatar:     path,
+		}
+	}
+
+	dbUser.Avatar = path
+	err = a.userStore.Update(dbUser)
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
@@ -62,19 +79,23 @@ func (a App) UpdateProfile(accessToken string, input models.UpdateProfileInput) 
 
 func (a App) GetUserInfo(accessToken string) (*models.UserInfo, error) {
 	ctx := context.Background()
-	user, err := a.keycloakClient.GetUserInfo(ctx, accessToken, a.config.KeycloakRealm)
-
+	keycloakUser, err := a.keycloakClient.GetUserInfo(ctx, accessToken, a.config.KeycloakRealm)
 	if err != nil {
 		return nil, err
 	}
+	user, err := a.userStore.FindByKeycloakId(*keycloakUser.Sub)
 
-	avatarUrl, _ := a.GetAvatarURL(accessToken)
+	if err != nil && err != models.ErrNotFound {
+		return nil, err
+	}
+
+	avatarUrl, _ := a.GetAvatarURL(user)
 
 	userInfo := &models.UserInfo{
-		Avatar:   avatarUrl,
-		Email:    *user.Email,
-		Name:     *user.Name,
-		LastName: *user.FamilyName,
+		Avatar:   avatarUrl.Url,
+		Email:    *keycloakUser.Email,
+		Name:     *keycloakUser.Name,
+		LastName: *keycloakUser.FamilyName,
 	}
 
 	return userInfo, err

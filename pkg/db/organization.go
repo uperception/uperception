@@ -19,7 +19,7 @@ func (s SQLOrganizationStore) List() ([]*models.Organization, error) {
 	var organizations []*models.Organization
 	err := s.db.Find(&organizations).Preload("LighthouseConfig").Error
 
-	return organizations, err
+	return organizations, gormErrorInterpreter(err)
 }
 
 func (s SQLOrganizationStore) FindById(id string) (*models.Organization, error) {
@@ -27,19 +27,19 @@ func (s SQLOrganizationStore) FindById(id string) (*models.Organization, error) 
 	err := s.db.Where("id = ?", id).First(&organization).Error
 
 	if err != nil {
-		return nil, err
+		return nil, gormErrorInterpreter(err)
 	}
 
-	return &organization, err
+	return &organization, gormErrorInterpreter(err)
 }
 
 func (s SQLOrganizationStore) Save(organization *models.Organization) error {
 	err := s.db.Save(organization).Error
-	return err
+	return gormErrorInterpreter(err)
 }
 
 func (s SQLOrganizationStore) Delete(id string) error {
 	err := s.db.Delete(&models.Organization{}, id).Error
 
-	return err
+	return gormErrorInterpreter(err)
 }

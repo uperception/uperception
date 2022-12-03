@@ -23,7 +23,7 @@ type clientRoles struct {
 	Roles []string `json:"roles,omitempty"`
 }
 
-var RealmConfigURL string = "http://localhost:3000/realms/Mmonitoring"
+var RealmConfigURL string = "http://localhost:3000/realms/UPerception"
 var clientID string = "account"
 
 func IsAuthorized(role string) gin.HandlerFunc {

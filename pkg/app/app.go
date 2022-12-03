@@ -16,7 +16,6 @@ import (
 )
 
 type App struct {
-	// userStore             sql.UserStore
 	config                   *appConfig.Config
 	keycloakClient           *gocloak.GoCloak
 	keycloakAdminToken       *gocloak.JWT
@@ -24,6 +23,7 @@ type App struct {
 	storage                  storage.Storage
 	lighthouseCollector      collectors.Collector
 	projectStore             db.ProjectStore
+	userStore                db.UserStore
 	organizationStore        db.OrganizationStore
 	sessionsStore            db.SessionStore
 	lighthouseResultStore    db.LighthouseResultStore
@@ -41,7 +41,8 @@ func NewApp(appConfig *appConfig.Config) *App {
 	q := queue.NewAwsQueue(sqsClient, appConfig.Queue, appConfig.QueueUrl)
 
 	s3Client := s3.NewFromConfig(cfg)
-	storage := storage.NewAwsStorage(s3Client, appConfig.Bucket)
+	s3PresignClient := s3.NewPresignClient(s3Client)
+	storage := storage.NewAwsStorage(s3Client, appConfig.Bucket, s3PresignClient)
 	lighthouse := collectors.NewLighthouseCollector(storage, db.NewLighthouseResultStore())
 
 	client := gocloak.NewClient(appConfig.KeycloakUrl)
@@ -52,6 +53,7 @@ func NewApp(appConfig *appConfig.Config) *App {
 		lighthouseCollector:      lighthouse,
 		keycloakClient:           client,
 		storage:                  storage,
+		userStore:                db.NewUserStore(),
 		projectStore:             db.NewProjectStore(),
 		organizationStore:        db.NewOrganizationStore(),
 		sessionsStore:            db.NewSessionStore(),
@@ -62,9 +64,14 @@ func NewApp(appConfig *appConfig.Config) *App {
 }
 
 func (a *App) refreshKeycloakToken() {
+	if a.keycloakAdminToken.ExpiresIn > 20 {
+		return
+	}
+
 	ctx := context.Background()
 	token, err := a.keycloakClient.LoginClient(ctx, a.config.KeycloakClient, a.config.KeycloakSecret, a.config.KeycloakRealm)
 	if err != nil {
+		log.Println("An fail occurred while refreshing the keycloak token")
 		return
 	}
 	a.keycloakAdminToken = token

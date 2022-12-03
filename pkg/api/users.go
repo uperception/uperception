@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -50,11 +49,13 @@ func (a *Api) AddAvatar(c *gin.Context) {
 		return
 	}
 
-	err = a.App.SaveAvatar(c.GetString("token"), avatarFile)
+	ext := file.Filename[len(file.Filename)-4:]
+
+	err = a.App.SaveAvatar(c.GetString("token"), avatarFile, ext)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{})
 		return
 	}
 
-	c.String(http.StatusOK, fmt.Sprintf("'%s' uploaded!", file.Filename))
+	c.Status(http.StatusCreated)
 }

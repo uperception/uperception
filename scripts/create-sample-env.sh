@@ -12,10 +12,9 @@ DB_HOST=
 DB_PORT=
 DB_PASSWORD=
 
-KEYCLOAK_ADMIN=
-KEYCLOAK_ADMIN_PASSWORD=
 KEYCLOAK_REALM=
-KEYCLOAK_CLIENT_ID=
+KEYCLOAK_CLIENT=
+KEYCLOAK_SECRET=
 """ >> "config.env"
 
 echo "Sample env created in config.env. Please fill the blank variables"

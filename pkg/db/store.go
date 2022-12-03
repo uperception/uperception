@@ -24,6 +24,7 @@ type SessionStore interface {
 }
 
 type UserStore interface {
+	FindByKeycloakId(id string) (*models.User, error)
 	Save(*models.User) error
 	Update(*models.User) error
 	Delete(string) error

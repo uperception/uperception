@@ -6,6 +6,7 @@ type User struct {
 	gorm.Model
 	ID         uint `gorm:"primary_key"`
 	KeycloakID string
+	Avatar     string
 }
 
 type UserInfo struct {

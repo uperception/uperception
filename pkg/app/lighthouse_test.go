@@ -88,6 +88,7 @@ func TestLighthouseBatchInsert(t *testing.T) {
 
 	endpoints, err = app.ListLighthouseEndpoints(projectID)
 	assert.NoError(t, err)
+	assert.Equal(t, 2, len(endpoints))
 
 	for _, endpoint := range endpoints {
 		assert.NotEmpty(t, endpoint.ID)
