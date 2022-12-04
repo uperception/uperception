@@ -13,6 +13,16 @@ jobs:
           go-version: 1.19
           cache: true
 
+      - name: Start Localstack
+        run: |
+          pip install localstack awscli-local
+          docker pull localstack/localstack
+          localstack start -d
+          echo "Waiting for LocalStack startup..."  # Wait 30 seconds for the LocalStack container
+          localstack wait -t 30                     # to become ready before timing out 
+          echo "Startup complete"
+          ./docker/locastack/entrypoint/02-create-resources.sh
+
       - name: Build
         run: make build
 

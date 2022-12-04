@@ -1,9 +1,7 @@
-#!bin/bash
+#!/bin/bash
 
-source_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+echo "########### Creating S3 Bucket ###########"
+awslocal s3 mb s3://uperception-storage
 
-echo "########### Creating S3 Buckets ###########"
-aws s3 mb s3://mmonitoring \
-	--endpoint-url=http://localhost:4566 \
-	--profile=localstack
-
+echo "########### Creating SQS Queue ###########"
+awslocal sqs create-queue --queue-name uperception-queue
