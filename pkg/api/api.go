@@ -38,20 +38,20 @@ func NewApi(config *config.Config) *Api {
 	v1 := router.Group("/v1")
 	{
 		// Projects
-		v1.GET("/projects", middleware.IsAuthorized("test"), a.QueryProjects)
-		v1.GET("/projects/:id", a.GetProject)
-		v1.POST("/projects", a.CreateProject)
-		v1.PUT("/projects/:id", a.UpdateProject)
-		v1.DELETE("/projects/:id", a.DeleteProject)
+		v1.GET("/projects", middleware.IsAuthorized(""), a.QueryProjects)
+		v1.GET("/projects/:id", middleware.IsAuthorized(""), a.GetProject)
+		v1.POST("/projects", middleware.IsAuthorized(""), a.CreateProject)
+		v1.PUT("/projects/:id", middleware.IsAuthorized(""), a.UpdateProject)
+		v1.DELETE("/projects/:id", middleware.IsAuthorized(""), a.DeleteProject)
 
 		// Lighthouse
-		v1.PUT("/projects/:id/lighthouse", a.UpdateLighthouseConfig)
+		v1.PUT("/projects/:id/lighthouse", middleware.IsAuthorized(""), a.UpdateLighthouseConfig)
 
-		v1.GET("/projects/:id/lighthouse/endpoints", a.ListLighthouseEndpoints)
-		v1.POST("/projects/:id/lighthouse/endpoints", a.CreateLighthouseEndpoint)
-		v1.POST("/projects/:id/lighthouse/endpoints/batch", a.CreateLighthouseEndpointsBatch)
-		v1.PUT("/projects/:id/lighthouse/endpoints/:endpointID", a.UpdateLighthouseEndpoint)
-		v1.DELETE("/projects/:id/lighthouse/endpoints/:endpointID", a.DeleteLighthouseEndpoint)
+		v1.GET("/projects/:id/lighthouse/endpoints", middleware.IsAuthorized(""), a.ListLighthouseEndpoints)
+		v1.POST("/projects/:id/lighthouse/endpoints", middleware.IsAuthorized(""), a.CreateLighthouseEndpoint)
+		v1.POST("/projects/:id/lighthouse/endpoints/batch", middleware.IsAuthorized(""), a.CreateLighthouseEndpointsBatch)
+		v1.PUT("/projects/:id/lighthouse/endpoints/:endpointID", middleware.IsAuthorized(""), a.UpdateLighthouseEndpoint)
+		v1.DELETE("/projects/:id/lighthouse/endpoints/:endpointID", middleware.IsAuthorized(""), a.DeleteLighthouseEndpoint)
 
 		// Sessions
 		// v1.GET("/projects/:id/sessions", a.QuerySessions)
@@ -64,10 +64,10 @@ func NewApi(config *config.Config) *Api {
 		// v1.PUT("/profile", a.UpdateProfile)
 
 		// Organizations
-		v1.GET("/organizations", a.QueryOrganizations)
-		v1.GET("/organizations/:id", a.FindOrganization)
-		v1.POST("/organizations", a.CreateOrganization)
-		v1.PUT("/organizations/:id", a.UpdateOrganization)
+		v1.GET("/organizations", middleware.IsAuthorized(""), a.QueryOrganizations)
+		v1.GET("/organizations/:id", middleware.IsAuthorized(""), a.FindOrganization)
+		v1.POST("/organizations", middleware.IsAuthorized(""), a.CreateOrganization)
+		v1.PUT("/organizations/:id", middleware.IsAuthorized(""), a.UpdateOrganization)
 		// v1.GET("/organizations/:id/projects", a.QueryOrganizationProjects)
 		// v1.GET("/organizations/:id/users", a.QueryOrganizationUsers)
 		// v1.POST("/organizations/:id/users", a.AddUserToOrganization)
