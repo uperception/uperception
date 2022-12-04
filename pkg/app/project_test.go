@@ -63,8 +63,7 @@ func TestUpdateProjectLighthouseConfig(t *testing.T) {
 	config, err := app.UpdateLighthouseConfig(
 		projectID,
 		&models.UpdateLighthouseConfigInput{
-			Enabled:     true,
-			Periodicity: 1,
+			Enabled: true,
 		})
 	assert.NoError(t, err)
 
@@ -75,13 +74,11 @@ func TestUpdateProjectLighthouseConfig(t *testing.T) {
 	_, err = app.UpdateLighthouseConfig(
 		projectID,
 		&models.UpdateLighthouseConfigInput{
-			Enabled:     false,
-			Periodicity: 2,
+			Enabled: false,
 		})
 	assert.NoError(t, err)
 
 	project, err = app.FindProject(projectID)
 	assert.NoError(t, err)
 	assert.Equal(t, false, project.LighthouseConfig.Enabled)
-	assert.Equal(t, uint8(2), project.LighthouseConfig.Periodicity)
 }

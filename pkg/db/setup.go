@@ -33,6 +33,7 @@ func SetupModels(dbType DBType) *gorm.DB {
 	db.AutoMigrate(&models.Organization{})
 
 	// Lighthouse Context
+	db.AutoMigrate(&models.LighthouseSchedule{})
 	db.AutoMigrate(&models.LighthouseConfig{})
 	db.AutoMigrate(&models.LighthouseEndpoint{})
 	db.AutoMigrate(&models.LighthouseMetric{})

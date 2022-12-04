@@ -20,16 +20,25 @@ const (
 	None
 )
 
+// Lighthouse specific schedule model
+type LighthouseSchedule struct {
+	Schedule
+	ID                 uint `json:"-"`
+	LighthouseConfigID uint
+}
+
+// Lighthouse configuration
 type LighthouseConfig struct {
-	ID          uint `gorm:"primary_key"`
-	ProjectID   uint `json:"-"`
-	Enabled     bool
-	Periodicity uint8
-	Endpoints   []LighthouseEndpoint
+	ID        uint `gorm:"primary_key"`
+	ProjectID uint `json:"-"`
+	Enabled   bool
+	Schedule  LighthouseSchedule
+	Endpoints []LighthouseEndpoint
 }
 
 type LighthouseEndpoint struct {
-	ID                 uint   `gorm:"primary_key"`
+	ID                 uint `gorm:"primary_key"`
+	Enabled            bool
 	LighthouseConfigID uint   `gorm:"index:,unique,composite:urlpathing" json:"-"`
 	Url                string `gorm:"index:,unique,composite:urlpathing"`
 	Header             string
@@ -81,12 +90,13 @@ type CreateLighthouseResultInput struct {
 }
 
 type UpdateLighthouseConfigInput struct {
-	Enabled     bool  `binding:"required"`
-	Periodicity uint8 `binding:"required"`
+	Enabled  bool `binding:"required"`
+	Schedule LighthouseSchedule
 }
 
 type LighthouseEndpointInput struct {
-	ID     uint
-	Url    string `binding:"required"`
-	Header string
+	ID      uint
+	Enabled bool
+	Url     string `binding:"required"`
+	Header  string
 }

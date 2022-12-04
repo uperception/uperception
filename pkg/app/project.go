@@ -69,10 +69,9 @@ func (a App) UpdateLighthouseConfig(id string, input *models.UpdateLighthouseCon
 	}
 
 	lighthouseConfig := &models.LighthouseConfig{
-		ID:          project.LighthouseConfig.ID,
-		Enabled:     input.Enabled,
-		Periodicity: input.Periodicity,
-		ProjectID:   project.ID,
+		ID:        project.LighthouseConfig.ID,
+		Enabled:   input.Enabled,
+		ProjectID: project.ID,
 	}
 
 	err = a.lighthouseConfigStore.Save(lighthouseConfig)

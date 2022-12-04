@@ -69,6 +69,8 @@ func (a App) CreateLighthouseEndpoint(projectId string, input models.LighthouseE
 		return nil, err
 	}
 
+	// marshal to json - as body
+	//
 	// body := strconv.FormatUint(uint64(endpont.ID), 10)
 	// _, err = a.queue.Publish(&body)
 	// if err != nil {
