@@ -44,9 +44,7 @@ func NewApi(config *config.Config) *Api {
 		v1.PUT("/projects/:id", middleware.IsAuthorized(""), a.UpdateProject)
 		v1.DELETE("/projects/:id", middleware.IsAuthorized(""), a.DeleteProject)
 
-		// Lighthouse
-		v1.PUT("/projects/:id/lighthouse", middleware.IsAuthorized(""), a.UpdateLighthouseConfig)
-
+		// Lighthouse Endpoints
 		v1.GET("/projects/:id/lighthouse/endpoints", middleware.IsAuthorized(""), a.ListLighthouseEndpoints)
 		v1.POST("/projects/:id/lighthouse/endpoints", middleware.IsAuthorized(""), a.CreateLighthouseEndpoint)
 		v1.POST("/projects/:id/lighthouse/endpoints/batch", middleware.IsAuthorized(""), a.CreateLighthouseEndpointsBatch)
@@ -68,6 +66,7 @@ func NewApi(config *config.Config) *Api {
 		v1.GET("/organizations/:id", middleware.IsAuthorized(""), a.FindOrganization)
 		v1.POST("/organizations", middleware.IsAuthorized(""), a.CreateOrganization)
 		v1.PUT("/organizations/:id", middleware.IsAuthorized(""), a.UpdateOrganization)
+
 		// v1.GET("/organizations/:id/projects", a.QueryOrganizationProjects)
 		// v1.GET("/organizations/:id/users", a.QueryOrganizationUsers)
 		// v1.POST("/organizations/:id/users", a.AddUserToOrganization)

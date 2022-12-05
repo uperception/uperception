@@ -6,12 +6,14 @@ import (
 
 	"github.com/Nerzal/gocloak/v12"
 	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/eventbridge"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/sqs"
 	"github.com/leometzger/mmonitoring/pkg/collectors"
 	appConfig "github.com/leometzger/mmonitoring/pkg/config"
 	"github.com/leometzger/mmonitoring/pkg/db"
 	"github.com/leometzger/mmonitoring/pkg/queue"
+	"github.com/leometzger/mmonitoring/pkg/scheduler"
 	"github.com/leometzger/mmonitoring/pkg/storage"
 )
 
@@ -20,6 +22,7 @@ type App struct {
 	keycloakClient           *gocloak.GoCloak
 	keycloakAdminToken       *gocloak.JWT
 	queue                    queue.Queue
+	scheduler                scheduler.Scheduler
 	storage                  storage.Storage
 	lighthouseCollector      collectors.Collector
 	projectStore             db.ProjectStore
@@ -37,6 +40,9 @@ func NewApp(appConfig *appConfig.Config) *App {
 		log.Fatal(err)
 	}
 
+	ebClient := eventbridge.NewFromConfig(cfg)
+	sched := scheduler.NewCloudwatchScheduler(ebClient, appConfig.Queue)
+
 	sqsClient := sqs.NewFromConfig(cfg)
 	q := queue.NewAwsQueue(sqsClient, appConfig.Queue, appConfig.QueueUrl)
 
@@ -50,6 +56,7 @@ func NewApp(appConfig *appConfig.Config) *App {
 	return &App{
 		config:                   appConfig,
 		queue:                    q,
+		scheduler:                sched,
 		lighthouseCollector:      lighthouse,
 		keycloakClient:           client,
 		storage:                  storage,

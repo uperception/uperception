@@ -22,18 +22,22 @@ const (
 
 // Lighthouse specific schedule model
 type LighthouseSchedule struct {
-	Schedule
 	ID                 uint `json:"-"`
 	LighthouseConfigID uint
+	Minute             string `binding:"required"`
+	Hour               string `binding:"required"`
+	DayOfMonth         string `binding:"required"`
+	DayWeek            string `binding:"required"`
+	Month              string `binding:"required"`
 }
 
 // Lighthouse configuration
 type LighthouseConfig struct {
-	ID        uint `gorm:"primary_key"`
+	ID        uint `gorm:"primary_key" json:"-"`
 	ProjectID uint `json:"-"`
 	Enabled   bool
 	Schedule  LighthouseSchedule
-	Endpoints []LighthouseEndpoint
+	Endpoints []LighthouseEndpoint `json:"-"`
 }
 
 type LighthouseEndpoint struct {
@@ -90,8 +94,8 @@ type CreateLighthouseResultInput struct {
 }
 
 type UpdateLighthouseConfigInput struct {
-	Enabled  bool `binding:"required"`
-	Schedule LighthouseSchedule
+	Enabled  bool               `binding:"required"`
+	Schedule LighthouseSchedule `binding:"required"`
 }
 
 type LighthouseEndpointInput struct {

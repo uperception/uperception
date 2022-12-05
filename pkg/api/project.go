@@ -74,22 +74,6 @@ func (a *Api) DeleteProject(c *gin.Context) {
 	c.JSON(http.StatusNoContent, gin.H{})
 }
 
-// PUT /projects/:id/lighthouse
-func (a *Api) UpdateLighthouseConfig(c *gin.Context) {
-	var input models.UpdateLighthouseConfigInput
-	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	lighthouseConfig, err := a.App.UpdateLighthouseConfig(c.Param("id"), &input)
-	if err != nil {
-		c.JSON(getStatus(err), gin.H{"error": err.Error()})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{"data": lighthouseConfig})
-}
-
 // POST /projects/:id/lighthouse/endpoints
 func (a *Api) CreateLighthouseEndpoint(c *gin.Context) {
 	var input models.LighthouseEndpointInput

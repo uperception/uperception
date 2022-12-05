@@ -19,6 +19,7 @@ type CreateProjectInput struct {
 }
 
 type UpdateProjectInput struct {
-	Name        string `binding:"required"`
-	Description string `binding:"required"`
+	Name             string `binding:"required"`
+	Description      string `binding:"required"`
+	LighthouseConfig LighthouseConfig
 }

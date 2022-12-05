@@ -47,38 +47,3 @@ func TestProjectBasicOperations(t *testing.T) {
 	_, err = app.FindProject(projectID)
 	assert.Error(t, err)
 }
-
-func TestUpdateProjectLighthouseConfig(t *testing.T) {
-	db.SetupModels(db.SQLite)
-	defer testlib.ResetDatabase()
-	app := app.NewApp(&config.Config{})
-
-	project, err := app.CreateProject(models.CreateProjectInput{
-		Name:        "Testing Project With Lighthouse Config",
-		Description: "Testing Description",
-	})
-	assert.NoError(t, err)
-	projectID := strconv.FormatUint(uint64(project.ID), 10)
-
-	config, err := app.UpdateLighthouseConfig(
-		projectID,
-		&models.UpdateLighthouseConfigInput{
-			Enabled: true,
-		})
-	assert.NoError(t, err)
-
-	project, err = app.FindProject(projectID)
-	assert.NoError(t, err)
-	assert.Equal(t, project.LighthouseConfig.ID, config.ID)
-
-	_, err = app.UpdateLighthouseConfig(
-		projectID,
-		&models.UpdateLighthouseConfigInput{
-			Enabled: false,
-		})
-	assert.NoError(t, err)
-
-	project, err = app.FindProject(projectID)
-	assert.NoError(t, err)
-	assert.Equal(t, false, project.LighthouseConfig.Enabled)
-}
