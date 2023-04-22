@@ -27,18 +27,21 @@ func SetupModels(dbType DBType) *gorm.DB {
 		panic("Failed to connect to database!")
 	}
 
+	// Core
 	db.AutoMigrate(&models.Project{})
-	db.AutoMigrate(&models.Session{})
 	db.AutoMigrate(&models.User{})
 	db.AutoMigrate(&models.Organization{})
 
-	// Lighthouse Context
+	// Lighthouse Module
 	db.AutoMigrate(&models.LighthouseSchedule{})
 	db.AutoMigrate(&models.LighthouseConfig{})
 	db.AutoMigrate(&models.LighthouseEndpoint{})
 	db.AutoMigrate(&models.LighthouseMetric{})
 	db.AutoMigrate(&models.LighthouseResult{})
 	db.AutoMigrate(&models.LighthouseAudits{})
+
+	// Session Recording Module
+	db.AutoMigrate(&models.Session{})
 
 	Instance = db
 

@@ -1,6 +1,7 @@
 package app_test
 
 import (
+	"regexp"
 	"strconv"
 	"testing"
 
@@ -25,6 +26,7 @@ func TestProjectBasicOperations(t *testing.T) {
 	projectID := strconv.FormatUint(uint64(project.ID), 10)
 
 	assert.NoError(t, err)
+	assert.Regexp(t, regexp.MustCompile("UP-[0-9]{7}"), project.Token)
 
 	// Find
 	project, err = app.FindProject(projectID)
@@ -46,4 +48,24 @@ func TestProjectBasicOperations(t *testing.T) {
 
 	_, err = app.FindProject(projectID)
 	assert.Error(t, err)
+}
+
+func TestFindProjectByToken(t *testing.T) {
+	db.SetupModels(db.SQLite)
+	defer testlib.ResetDatabase()
+	app := app.NewApp(&config.Config{})
+
+	// Create
+	project, err := app.CreateProject(models.CreateProjectInput{
+		Name:        "Testing Project",
+		Description: "Testing Description",
+	})
+
+	assert.NoError(t, err)
+	assert.Regexp(t, regexp.MustCompile("UP-[0-9]{7}"), project.Token)
+
+	project, err = app.FindProjectByToken(project.Token)
+	assert.NoError(t, err)
+	assert.NotNil(t, project)
+	assert.Equal(t, uint(1), project.ID)
 }

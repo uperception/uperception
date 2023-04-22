@@ -3,6 +3,8 @@ package app
 import (
 	"encoding/json"
 	"fmt"
+	"math/rand"
+	"strconv"
 
 	"github.com/leometzger/mmonitoring/pkg/models"
 	"github.com/leometzger/mmonitoring/pkg/scheduler"
@@ -12,6 +14,7 @@ func (a App) CreateProject(input models.CreateProjectInput) (*models.Project, er
 	project := models.Project{
 		Name:        input.Name,
 		Description: input.Description,
+		Token:       "UP-" + strconv.Itoa(1000000+rand.Intn(9000000)),
 		LighthouseConfig: models.LighthouseConfig{
 			Enabled:   true,
 			Endpoints: []models.LighthouseEndpoint{},
@@ -85,6 +88,12 @@ func (a App) DeleteProject(id string) error {
 
 	a.scheduler.DeleteSchedule(fmt.Sprintf("lighthouse-%v", id))
 	return nil
+}
+
+func (a App) FindProjectByToken(token string) (*models.Project, error) {
+	project, err := a.projectStore.FindByToken(token)
+
+	return project, err
 }
 
 func (a App) createProjectSchedule(project *models.Project) error {

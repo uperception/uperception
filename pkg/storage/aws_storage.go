@@ -1,7 +1,9 @@
 package storage
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"io"
 
 	"github.com/aws/aws-sdk-go-v2/service/s3"
@@ -65,6 +67,21 @@ func (s *AwsStorage) GetAvatarUrl(key string) (*SignedUrl, error) {
 	}
 
 	return &signedUrl, nil
+}
+
+func (s *AwsStorage) AddSessionEvents(key string, events []map[string]interface{}) error {
+	body, err := json.Marshal(events)
+	if err != nil {
+		return err
+	}
+
+	_, err = s.client.PutObject(context.TODO(), &s3.PutObjectInput{
+		Bucket: &s.bucket,
+		Key:    &key,
+		Body:   bytes.NewReader([]byte(body)),
+	})
+
+	return err
 }
 
 func (s *AwsStorage) RemoveAvatar(key string) error {

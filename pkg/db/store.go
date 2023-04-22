@@ -5,6 +5,7 @@ import "github.com/leometzger/mmonitoring/pkg/models"
 type ProjectStore interface {
 	List() ([]*models.Project, error)
 	FindById(string) (*models.Project, error)
+	FindByToken(string) (*models.Project, error)
 	Save(*models.Project) error
 	Update(*models.Project) error
 	Delete(string) error
@@ -19,6 +20,7 @@ type OrganizationStore interface {
 
 type SessionStore interface {
 	Save(*models.Session) error
+	FindById(string) (*models.Session, error)
 	Update(*models.Session) error
 	Delete(string) error
 }

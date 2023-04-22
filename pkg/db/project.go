@@ -36,6 +36,18 @@ func (s SQLProjectStore) FindById(id string) (*models.Project, error) {
 	return &project, err
 }
 
+// Finds the project by specified token
+func (s SQLProjectStore) FindByToken(token string) (*models.Project, error) {
+	var project models.Project
+	err := s.db.Preload(clause.Associations).Preload("LighthouseConfig.Endpoints").Where("token = ?", token).First(&project).Error
+
+	if err != nil {
+		return nil, models.ErrNotFound
+	}
+
+	return &project, err
+}
+
 // Finds the project with the specified ID
 func (s SQLProjectStore) FindByName(name string) (*models.Project, error) {
 	var project models.Project

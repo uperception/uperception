@@ -9,6 +9,7 @@ type Project struct {
 	Description      string
 	OrganizationID   uint
 	UserID           uint
+	Token            string
 	LighthouseConfig LighthouseConfig
 	Sessions         []Session
 }

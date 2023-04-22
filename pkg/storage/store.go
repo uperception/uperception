@@ -15,4 +15,5 @@ type Storage interface {
 	GetAvatarUrl(key string) (*SignedUrl, error)
 	RemoveAvatar(key string) error
 	SaveLighthouseResult(domain string, content io.Reader) error
+	AddSessionEvents(key string, events []map[string]interface{}) error
 }
